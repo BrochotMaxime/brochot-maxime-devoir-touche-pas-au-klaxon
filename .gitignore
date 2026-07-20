@@ -1,0 +1,28 @@
+# Composer dependencies
+/vendor/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# PHPUnit
+.phpunit.cache/
+.phpunit.result.cache
+
+# PHPStan temporary files
+/tmp/
+
+# Node dependencies
+/node_modules/
+
+# Sass source maps
+/public/assets/css/*.map
+
+# IDE
+.vscode/
+.idea/
+
+# Operating system
+.DS_Store
+Thumbs.db
