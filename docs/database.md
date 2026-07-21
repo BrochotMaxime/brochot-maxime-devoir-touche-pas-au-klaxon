@@ -136,3 +136,21 @@ During development, the expected sequence is:
 1. run `create_database.sql`
 2. run `seed_database.sql`
 3. start the application
+
+## Initial Data
+
+The initial data set is stored in:
+
+`database/seed_database.sql`
+
+It contains:
+
+- the 12 agencies supplied in the assignment annex
+- the 20 employees supplied in the assignment annex
+- one administrator account
+- standard user accounts
+- future, past and full test trips
+
+Test credentials are documented in the README and final assignment deliverable.
+
+The seed script must be executed after `create_database.sql`.
