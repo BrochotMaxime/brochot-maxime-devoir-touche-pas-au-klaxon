@@ -18,12 +18,18 @@ $documentTitle = isset($pageTitle)
 <html lang="fr">
     <head>
         <meta charset="UTF-8">
+
         <meta
             name="viewport"
             content="width=device-width, initial-scale=1"
         >
 
         <title><?= escape($documentTitle) ?></title>
+
+        <link
+            rel="stylesheet"
+            href="/assets/css/main.css"
+        >
     </head>
 
     <body>
@@ -31,7 +37,7 @@ $documentTitle = isset($pageTitle)
 
         <?php require dirname(__DIR__) . '/partials/flash.php'; ?>
 
-        <main>
+        <main class="application-main">
             <?= $content ?>
         </main>
 

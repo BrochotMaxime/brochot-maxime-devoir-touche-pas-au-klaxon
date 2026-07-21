@@ -8,7 +8,10 @@ declare(strict_types=1);
 
     <p>La page demandée est introuvable.</p>
 
-    <a href="/">
+    <a
+        class="btn btn-primary"
+        href="/"
+    >
         Retour à l'accueil
     </a>
 </section>

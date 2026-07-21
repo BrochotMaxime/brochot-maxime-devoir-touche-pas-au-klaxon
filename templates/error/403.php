@@ -8,7 +8,10 @@ declare(strict_types=1);
 
     <p>Vous n'êtes pas autorisé à accéder à cette page.</p>
 
-    <a href="/">
+    <a
+        class="btn btn-primary"
+        href="/"
+    >
         Retour à l'accueil
     </a>
 </section>

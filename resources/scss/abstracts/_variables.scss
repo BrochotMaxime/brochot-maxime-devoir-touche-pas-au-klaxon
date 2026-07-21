@@ -1,0 +1,36 @@
+// Application color palette
+
+$light: #f1f8fc;
+$primary: #0074c7;
+$secondary: #00497c;
+$dark: #384050;
+$danger: #cd2c2e;
+$success: #82b864;
+
+// Bootstrap global configuration
+
+$body-bg: $light;
+$body-color: $dark;
+
+$link-color: $primary;
+$link-hover-color: $secondary;
+
+$headings-color: $secondary;
+
+$border-color: rgba($dark, 0.25);
+
+$font-family-sans-serif: Arial, Helvetica, sans-serif;
+
+$border-radius: 0.25rem;
+$border-radius-sm: 0.2rem;
+$border-radius-lg: 0.35rem;
+
+$btn-font-weight: 600;
+
+$input-border-color: rgba($dark, 0.4);
+$input-focus-border-color: $primary;
+$input-focus-box-shadow: 0 0 0 0.2rem rgba($primary, 0.2);
+
+$table-striped-bg: rgba($primary, 0.06);
+$table-hover-bg: rgba($primary, 0.1);
+$table-border-color: rgba($dark, 0.25);

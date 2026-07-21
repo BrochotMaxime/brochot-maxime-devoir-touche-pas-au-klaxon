@@ -146,3 +146,18 @@ Supported message types are:
 - info
 
 Write operations will follow the Post/Redirect/Get pattern and add a success or error message before redirecting to the corresponding list page.
+
+## Styling
+
+The interface uses Bootstrap and Sass.
+
+Bootstrap variables are overridden before importing the framework so that the supplied graphic palette is applied to standard components.
+
+Sass source files are stored in `resources/scss/`.
+
+Compiled CSS is generated in `public/assets/css/main.css`.
+
+Available commands:
+
+- `npm run sass:build`
+- `npm run sass:watch`

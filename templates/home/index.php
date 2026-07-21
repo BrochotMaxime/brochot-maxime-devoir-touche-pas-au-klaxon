@@ -3,12 +3,18 @@
 declare(strict_types=1);
 ?>
 
-<section>
-    <h1>Touche pas au klaxon</h1>
+<section class="page-section">
+    <h1 class="page-section__title">
+        Touche pas au klaxon
+    </h1>
 
-    <p>Consultez les trajets inter-sites proposés par les employés.</p>
+    <div class="page-section__intro">
+        <p>Consultez les trajets inter-sites proposés par les employés.</p>
 
-    <p>Connectez-vous pour obtenir plus d'informations et proposer un trajet.</p>
+        <p>Connectez-vous pour obtenir davantage d'informations et proposer un trajet.</p>
 
-    <p>La liste des trajets sera ajoutée prochainement.</p>
+        <p class="mb-0">
+            La liste des trajets sera ajoutée prochainement.
+        </p>
+    </div>
 </section>

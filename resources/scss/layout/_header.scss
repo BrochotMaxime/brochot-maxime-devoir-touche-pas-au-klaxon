@@ -1,0 +1,47 @@
+.application-header {
+  background-color: $secondary;
+  color: $white;
+}
+
+.application-header__nav {
+  width: min(100% - 3rem, 1400px);
+  min-height: 4.5rem;
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.application-header__brand {
+  margin-right: auto;
+  color: $white;
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-decoration: none;
+
+  &:hover,
+  &:focus {
+    color: $light;
+  }
+}
+
+.application-header__link {
+  color: $white;
+  font-weight: 600;
+  text-decoration: none;
+
+  &:hover,
+  &:focus {
+    color: $light;
+    text-decoration: underline;
+  }
+}
+
+.application-header__user {
+  margin: 0;
+  color: $white;
+}
+
+.application-header__logout {
+  margin: 0;
+}
