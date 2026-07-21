@@ -95,3 +95,13 @@ Repositories receive this connection and do not create their own.
 - dependency injection
 - secure configuration
 - testable components
+
+## View Rendering
+
+The `App\Service\View` service renders PHP templates inside the shared application layout.
+
+Controllers provide template data and receive the generated HTML.
+
+Shared interface elements are stored in `templates/partials/`, while the main document structure is stored in `templates/layouts/base php`.
+
+Dynamic values must be escaped with the global `escape()` helper before being displayed.
