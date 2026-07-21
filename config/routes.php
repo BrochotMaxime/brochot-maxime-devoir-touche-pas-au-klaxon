@@ -9,6 +9,7 @@ use App\Controller\ProtectedPageController;
 use App\Core\Database;
 use App\Core\DatabaseConfig;
 use App\Repository\UserRepository;
+use App\Repository\TripRepository;
 use App\Service\AuthService;
 use App\Service\Session;
 use App\Service\View;
@@ -33,6 +34,7 @@ $database = new Database($databaseConfig);
 $connection = $database->getConnection();
 
 $userRepository = new UserRepository($connection);
+$tripRepository = new TripRepository($connection);
 
 $authService = new AuthService(
     $userRepository,
@@ -42,6 +44,7 @@ $authService = new AuthService(
 $homeController = new HomeController(
     $view,
     $authService,
+    $tripRepository,
 );
 
 $authController = new AuthController(

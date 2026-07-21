@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Model\Trip;
+use App\Model\TripListItem;
+
 use DateTimeImmutable;
 use PDO;
 
@@ -109,6 +111,40 @@ final class TripRepository
     }
 
     /**
+     * Returns future trips that still have available seats.
+     *
+     * @return list<TripListItem>
+     */
+    public function findPublicAvailableTrips(): array
+    {
+        $statement = $this->connection->query(
+            'SELECT
+                trips.id,
+                trips.departure_datetime,
+                trips.arrival_datetime,
+                trips.available_seats,
+                departure_agency.name AS departure_agency,
+                arrival_agency.name AS arrival_agency
+            FROM trips
+            INNER JOIN agencies AS departure_agency
+                ON departure_agency.id = trips.departure_agency_id
+            INNER JOIN agencies AS arrival_agency
+                ON arrival_agency.id = trips.arrival_agency_id
+            WHERE trips.departure_datetime >= NOW()
+            AND trips.available_seats > 0
+            ORDER BY trips.departure_datetime ASC'
+        );
+
+        $trips = [];
+
+        foreach ($statement->fetchAll() as $row) {
+            $trips[] = $this->hydrateListItem($row);
+        }
+
+        return $trips;
+    }
+
+    /**
      * @param array<string, mixed> $row
      */
     private function hydrate(array $row): Trip
@@ -126,6 +162,25 @@ final class TripRepository
             authorId: (int) $row['author_id'],
             departureAgencyId: (int) $row['departure_agency_id'],
             arrivalAgencyId: (int) $row['arrival_agency_id'],
+        );
+    }
+
+    /**
+     * @param array<string, mixed> $row
+     */
+    private function hydrateListItem(array $row): TripListItem
+    {
+        return new TripListItem(
+            id: (int) $row['id'],
+            departureDatetime: new DateTimeImmutable(
+                (string) $row['departure_datetime']
+            ),
+            arrivalDatetime: new DateTimeImmutable(
+                (string) $row['arrival_datetime']
+            ),
+            availableSeats: (int) $row['available_seats'],
+            departureAgency: (string) $row['departure_agency'],
+            arrivalAgency: (string) $row['arrival_agency'],
         );
     }
 }

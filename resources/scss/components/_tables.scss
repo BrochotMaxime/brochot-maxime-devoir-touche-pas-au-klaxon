@@ -1,0 +1,18 @@
+.trip-table {
+  min-width: 1050px;
+}
+
+.trip-table thead {
+  background-color: $secondary;
+  color: $white;
+}
+
+.trip-table th,
+.trip-table td {
+  vertical-align: middle;
+}
+
+.trip-table th:last-child,
+.trip-table td:last-child {
+  text-align: center;
+}
