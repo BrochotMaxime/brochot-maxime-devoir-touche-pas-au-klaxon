@@ -65,3 +65,13 @@ Contains PHPUnit tests.
 - Keep business rules outside templates.
 - Reuse shared behavior through services and core components.
 - Use dependency injection instead of creating dependencies throughout the code.
+
+## Routing
+
+Application routes are declared in `config/routes.php`.
+
+The `public/index.php` front controller loads the router configuration and executes the router.
+
+During local development, the root-level `router.php` script forwards non-static requests to the front controller when using PHP's built-in web server.
+
+Controllers are responsible for handling matched routes and returning HTTP responses.
