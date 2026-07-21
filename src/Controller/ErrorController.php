@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\View;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -11,10 +12,18 @@ use Symfony\Component\HttpFoundation\Response;
  */
 final class ErrorController
 {
+    public function __construct(
+        private readonly View $view,
+    ) {
+    }
+
     public function notFound(): Response
     {
         return new Response(
-            '<h1>404</h1><p>La page demandée est introuvable.</p>',
+            $this->view->render('error/404', [
+                'pageTitle' => 'Page introuvable',
+                'currentUser' => null,
+            ]),
             Response::HTTP_NOT_FOUND,
         );
     }

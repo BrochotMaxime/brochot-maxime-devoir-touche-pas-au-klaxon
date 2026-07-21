@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\View;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -11,10 +12,18 @@ use Symfony\Component\HttpFoundation\Response;
  */
 final class HomeController
 {
+    public function __construct(
+        private readonly View $view,
+    ) {
+    }
+
     public function index(): Response
     {
         return new Response(
-            '<h1>Touche pas au klaxon</h1><p>Liste des trajets à venir.</p>'
+            $this->view->render('home/index', [
+                'pageTitle' => 'Accueil',
+                'currentUser' => null,
+            ])
         );
     }
 }

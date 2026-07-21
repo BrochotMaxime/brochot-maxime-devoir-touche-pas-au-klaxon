@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\View;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -11,10 +12,18 @@ use Symfony\Component\HttpFoundation\Response;
  */
 final class AuthController
 {
+    public function __construct(
+        private readonly View $view,
+    ) {
+    }
+
     public function login(): Response
     {
         return new Response(
-            '<h1>Connexion</h1><p>Le formulaire sera ajouté ultérieurement.</p>'
+            $this->view->render('auth/login', [
+                'pageTitle' => 'Connexion',
+                'currentUser' => null,
+            ])
         );
     }
 }
