@@ -13,14 +13,19 @@ use App\Service\AuthService;
 use App\Service\Session;
 use App\Service\View;
 use App\Service\AccessGuard;
+use App\Service\Flash;
 use Buki\Router\Router;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 $router = new Router();
 
+$session = new Session();
+$flash = new Flash($session);
+
 $view = new View(
-    dirname(__DIR__) . '/templates'
+    dirname(__DIR__) . '/templates',
+    $flash,
 );
 
 $databaseConfig = DatabaseConfig::fromEnvironment();
@@ -29,7 +34,6 @@ $connection = $database->getConnection();
 
 $userRepository = new UserRepository($connection);
 
-$session = new Session();
 $authService = new AuthService(
     $userRepository,
     $session,
@@ -43,6 +47,7 @@ $homeController = new HomeController(
 $authController = new AuthController(
     $view,
     $authService,
+    $flash,
 );
 
 $errorController = new ErrorController(

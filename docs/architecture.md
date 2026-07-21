@@ -129,3 +129,20 @@ Authenticated standard users receive an HTTP 403 response when attempting to acc
 Authorization is checked server-side for every protected route. Hiding a link or button in a template is not considered sufficient protection.
 
 Logout is handled through a POST request and destroys both server-side session data and the session cookie.
+
+## Flash Messages
+
+Temporary feedback messages are handled by `App\Service\Flash`.
+
+Messages are stored in the PHP session, survive one redirect and are removed after their first display.
+
+The shared layout renders flash messages through `templates/partials/flash.php`.
+
+Supported message types are:
+
+- success
+- danger
+- warning
+- info
+
+Write operations will follow the Post/Redirect/Get pattern and add a success or error message before redirecting to the corresponding list page.

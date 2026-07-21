@@ -84,7 +84,8 @@ final class AuthService
 
     public function logout(): void
     {
-        $this->session->destroy();
+        $this->session->clear();
+        $this->session->regenerateId();
     }
 
     public function isAdmin(): bool

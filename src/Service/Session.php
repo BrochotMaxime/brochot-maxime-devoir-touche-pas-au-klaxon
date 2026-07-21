@@ -36,6 +36,11 @@ final class Session
         }
     }
 
+    public function clear(): void
+    {
+        $_SESSION = [];
+    }
+
     /**
      * Removes all session data and destroys the current session.
      */
