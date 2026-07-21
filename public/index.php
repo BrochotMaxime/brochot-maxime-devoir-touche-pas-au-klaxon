@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-use App\Core\Application;
+use Buki\Router\Router;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 require_once dirname(__DIR__) . '/config/bootstrap.php';
 
-$application = new Application();
+/** @var Router $router */
+$router = require dirname(__DIR__) . '/config/routes.php';
 
-echo $application->getName();
+$router->run();
