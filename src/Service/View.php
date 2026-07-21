@@ -13,6 +13,7 @@ final class View
 {
     public function __construct(
         private readonly string $templatePath,
+        private readonly Flash $flash,
     ) {
     }
 
@@ -27,10 +28,11 @@ final class View
         string $layout = 'layouts/base',
     ): string {
         $content = $this->renderTemplate($template, $data);
-
+    
         return $this->renderTemplate($layout, [
             ...$data,
             'content' => $content,
+            'flashMessages' => $this->flash->consume(),
         ]);
     }
 

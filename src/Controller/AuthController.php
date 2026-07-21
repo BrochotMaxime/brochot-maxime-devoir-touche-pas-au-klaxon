@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Service\AuthService;
 use App\Service\View;
+use App\Service\Flash;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,6 +19,7 @@ final class AuthController
     public function __construct(
         private readonly View $view,
         private readonly AuthService $authService,
+        private readonly Flash $flash,
     ) {
     }
 
@@ -76,12 +78,20 @@ final class AuthController
             );
         }
 
+        $this->flash->success(
+            'Vous êtes maintenant connecté.'
+        );
+
         return new RedirectResponse('/');
     }
 
     public function logout(): Response
     {
         $this->authService->logout();
+
+        $this->flash->success(
+            'Vous avez été déconnecté avec succès.'
+        );
 
         return new RedirectResponse('/');
     }
