@@ -37,8 +37,8 @@ Contains the PHP source code and follows PSR-4 autoloading through the `App` nam
 
 - `Controller/`: handles HTTP requests and responses
 - `Core/`: contains shared infrastructure
-- `Model/`: represents domain data
-- `Repository/`: contains database queries
+- `Model/`: contains immutable domain objects representing users, agencies and trips
+- `Repository/`: contains PDO queries and converts database rows into domain models
 - `Service/`: contains reusable application logic
 
 ### `templates/`
