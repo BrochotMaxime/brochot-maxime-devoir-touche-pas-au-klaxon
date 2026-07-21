@@ -117,3 +117,15 @@ Only the password hash is stored in the database. Submitted passwords are verifi
 After successful authentication, the session identifier is regenerated and the minimum required user information is stored in the session.
 
 Controllers retrieve the authenticated user through `AuthService` and pass it to the shared layout.
+
+## Authorization
+
+Protected routes use `App\Service\AccessGuard`.
+
+Unauthenticated visitors are redirected to the login page.
+
+Authenticated standard users receive an HTTP 403 response when attempting to access administrator pages.
+
+Authorization is checked server-side for every protected route. Hiding a link or button in a template is not considered sufficient protection.
+
+Logout is handled through a POST request and destroys both server-side session data and the session cookie.

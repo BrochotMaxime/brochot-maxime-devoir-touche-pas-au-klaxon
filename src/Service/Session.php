@@ -31,11 +31,37 @@ final class Session
 
     public function regenerateId(): void
     {
-        session_regenerate_id(true);
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_regenerate_id(true);
+        }
     }
 
-    public function clear(): void
+    /**
+     * Removes all session data and destroys the current session.
+     */
+    public function destroy(): void
     {
         $_SESSION = [];
+
+        if (ini_get('session.use_cookies')) {
+            $cookieParameters = session_get_cookie_params();
+
+            setcookie(
+                session_name(),
+                '',
+                [
+                    'expires' => time() - 42000,
+                    'path' => $cookieParameters['path'],
+                    'domain' => $cookieParameters['domain'],
+                    'secure' => $cookieParameters['secure'],
+                    'httponly' => $cookieParameters['httponly'],
+                    'samesite' => $cookieParameters['samesite'] ?? 'Lax',
+                ],
+            );
+        }
+
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_destroy();
+        }
     }
 }

@@ -84,7 +84,14 @@ final class AuthService
 
     public function logout(): void
     {
-        $this->session->clear();
-        $this->session->regenerateId();
+        $this->session->destroy();
+    }
+
+    public function isAdmin(): bool
+    {
+        $user = $this->getUser();
+
+        return $user !== null
+            && $user['role'] === 'ROLE_ADMIN';
     }
 }
