@@ -105,3 +105,15 @@ Controllers provide template data and receive the generated HTML.
 Shared interface elements are stored in `templates/partials/`, while the main document structure is stored in `templates/layouts/base php`.
 
 Dynamic values must be escaped with the global `escape()` helper before being displayed.
+
+## Authentication
+
+Authentication is handled by `App\Service\AuthService`.
+
+User credentials are checked against data retrieved by `UserRepository`.
+
+Only the password hash is stored in the database. Submitted passwords are verified with PHP's password verification functions.
+
+After successful authentication, the session identifier is regenerated and the minimum required user information is stored in the session.
+
+Controllers retrieve the authenticated user through `AuthService` and pass it to the shared layout.
