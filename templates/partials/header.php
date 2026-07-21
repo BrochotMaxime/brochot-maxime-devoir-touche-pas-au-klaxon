@@ -13,7 +13,7 @@ $isAdmin = $isAuthenticated
 
 <header>
     <nav aria-label="Navigation principale">
-        <a href="/">
+        <a href="<?= $isAdmin ? '/admin' : '/' ?>">
             Touche pas au klaxon
         </a>
 

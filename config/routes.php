@@ -5,12 +5,14 @@ declare(strict_types=1);
 use App\Controller\AuthController;
 use App\Controller\ErrorController;
 use App\Controller\HomeController;
+use App\Controller\ProtectedPageController;
 use App\Core\Database;
 use App\Core\DatabaseConfig;
 use App\Repository\UserRepository;
 use App\Service\AuthService;
 use App\Service\Session;
 use App\Service\View;
+use App\Service\AccessGuard;
 use Buki\Router\Router;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,6 +50,16 @@ $errorController = new ErrorController(
     $authService,
 );
 
+$accessGuard = new AccessGuard(
+    $authService,
+    $errorController,
+);
+
+$protectedPageController = new ProtectedPageController(
+    $view,
+    $authService,
+);
+
 $router->get(
     '/',
     fn (): Response => $homeController->index(),
@@ -56,6 +68,38 @@ $router->get(
 $router->get(
     '/login',
     fn (): Response => $authController->showLogin(),
+);
+
+$router->get(
+    '/admin',
+    function () use (
+        $accessGuard,
+        $protectedPageController,
+    ): Response {
+        $accessResponse = $accessGuard->requireAdministrator();
+
+        if ($accessResponse !== null) {
+            return $accessResponse;
+        }
+
+        return $protectedPageController->adminDashboard();
+    },
+);
+
+$router->get(
+    '/trips/create',
+    function () use (
+        $accessGuard,
+        $protectedPageController,
+    ): Response {
+        $accessResponse = $accessGuard->requireAuthentication();
+
+        if ($accessResponse !== null) {
+            return $accessResponse;
+        }
+
+        return $protectedPageController->createTrip();
+    },
 );
 
 $router->post(

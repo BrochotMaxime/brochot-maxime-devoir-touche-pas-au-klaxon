@@ -9,9 +9,9 @@ use App\Service\View;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Handles application error pages.
+ * Displays temporary protected pages until their features are implemented.
  */
-final class ErrorController
+final class ProtectedPageController
 {
     public function __construct(
         private readonly View $view,
@@ -19,25 +19,23 @@ final class ErrorController
     ) {
     }
 
-    public function forbidden(): Response
+    public function createTrip(): Response
     {
         return new Response(
-            $this->view->render('error/403', [
-                'pageTitle' => 'Accès interdit',
+            $this->view->render('trips/create', [
+                'pageTitle' => 'Créer un trajet',
                 'currentUser' => $this->authService->getUser(),
-            ]),
-            Response::HTTP_FORBIDDEN,
+            ])
         );
     }
 
-    public function notFound(): Response
+    public function adminDashboard(): Response
     {
         return new Response(
-            $this->view->render('error/404', [
-                'pageTitle' => 'Page introuvable',
+            $this->view->render('admin/dashboard', [
+                'pageTitle' => 'Administration',
                 'currentUser' => $this->authService->getUser(),
-            ]),
-            Response::HTTP_NOT_FOUND,
+            ])
         );
     }
 }
