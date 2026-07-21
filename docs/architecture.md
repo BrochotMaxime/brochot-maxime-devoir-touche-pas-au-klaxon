@@ -161,3 +161,11 @@ Available commands:
 
 - `npm run sass:build`
 - `npm run sass:watch`
+
+## Read Models
+
+List pages may use dedicated read models when their data differs from the main domain model.
+
+`TripListItem` represents the joined trip and agency information required by the public home page.
+
+The corresponding SQL query remains inside `TripRepository`.
