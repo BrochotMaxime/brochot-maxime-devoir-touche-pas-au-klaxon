@@ -11,55 +11,90 @@ $isAdmin = $isAuthenticated
     && ($currentUser['role'] ?? null) === 'ROLE_ADMIN';
 ?>
 
-<header>
-    <nav aria-label="Navigation principale">
-        <a href="<?= $isAdmin ? '/admin' : '/' ?>">
+<header class="application-header">
+    <nav
+        class="application-header__nav"
+        aria-label="Navigation principale"
+    >
+        <a
+            class="application-header__brand"
+            href="<?= $isAdmin ? '/admin' : '/' ?>"
+        >
             Touche pas au klaxon
         </a>
 
         <?php if (!$isAuthenticated): ?>
-            <a href="/login">
+            <a
+                class="btn btn-primary"
+                href="/login"
+            >
                 Connexion
             </a>
 
         <?php elseif ($isAdmin): ?>
-            <a href="/admin/users">
+            <a
+                class="application-header__link"
+                href="/admin/users"
+            >
                 Utilisateurs
             </a>
 
-            <a href="/admin/agencies">
+            <a
+                class="application-header__link"
+                href="/admin/agencies"
+            >
                 Agences
             </a>
 
-            <a href="/admin/trips">
+            <a
+                class="application-header__link"
+                href="/admin/trips"
+            >
                 Trajets
             </a>
 
-            <span>
+            <p class="application-header__user">
                 Bonjour
                 <?= escape($currentUser['firstName'] ?? '') ?>
                 <?= escape($currentUser['lastName'] ?? '') ?>
-            </span>
+            </p>
 
-            <form action="/logout" method="post">
-                <button type="submit">
+            <form
+                class="application-header__logout"
+                action="/logout"
+                method="post"
+            >
+                <button
+                    class="btn btn-light"
+                    type="submit"
+                >
                     Déconnexion
                 </button>
             </form>
 
         <?php else: ?>
-            <a href="/trips/create">
+            <a
+                class="btn btn-primary"
+                href="/trips/create"
+            >
                 Créer un trajet
             </a>
 
-            <span>
+            <p class="application-header__user">
                 Bonjour
                 <?= escape($currentUser['firstName'] ?? '') ?>
                 <?= escape($currentUser['lastName'] ?? '') ?>
-            </span>
+            </p>
 
-            <form action="/logout" method="post">
-                <button type="submit">
+            <form
+                class="application-header__logout"
+                action="/logout"
+                method="post"
+            >
+                <button
+                    class="btn btn-light"
+                    type="submit"
+                >
                     Déconnexion
                 </button>
             </form>

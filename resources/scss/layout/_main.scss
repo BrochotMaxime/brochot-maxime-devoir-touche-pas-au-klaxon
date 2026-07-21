@@ -1,0 +1,22 @@
+.application-main {
+  width: min(100% - 3rem, 1400px);
+  margin-inline: auto;
+  padding-block: 3rem;
+  flex: 1;
+}
+
+.page-section {
+  padding: 2rem;
+  background-color: $white;
+  border: 1px solid rgba($dark, 0.15);
+  border-radius: $border-radius-lg;
+  box-shadow: 0 0.25rem 1rem rgba($dark, 0.08);
+}
+
+.page-section__title {
+  margin-bottom: 1.5rem;
+}
+
+.page-section__intro {
+  max-width: 70ch;
+}

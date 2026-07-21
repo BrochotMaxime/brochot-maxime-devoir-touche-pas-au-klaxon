@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 <?php if ($flashMessages !== []): ?>
     <section
+        class="flash-messages"
         aria-label="Messages de notification"
     >
         <?php foreach ($flashMessages as $flashMessage): ?>

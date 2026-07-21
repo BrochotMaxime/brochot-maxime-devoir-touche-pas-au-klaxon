@@ -8,22 +8,37 @@ declare(strict_types=1);
  */
 ?>
 
-<section>
-    <h1>Connexion</h1>
+<section class="page-section">
+    <h1 class="page-section__title">
+        Connexion
+    </h1>
 
     <?php if (isset($errors['credentials'])): ?>
-        <p role="alert">
+        <div
+            class="alert alert-danger"
+            role="alert"
+        >
             <?= escape($errors['credentials']) ?>
-        </p>
+        </div>
     <?php endif; ?>
 
-    <form action="/login" method="post" novalidate>
-        <div>
-            <label for="email">
+    <form
+        action="/login"
+        method="post"
+        novalidate
+    >
+        <div class="mb-3">
+            <label
+                class="form-label"
+                for="email"
+            >
                 Adresse email
             </label>
 
             <input
+                class="form-control<?= isset($errors['email'])
+                    ? ' is-invalid'
+                    : '' ?>"
                 type="email"
                 id="email"
                 name="email"
@@ -33,18 +48,24 @@ declare(strict_types=1);
             >
 
             <?php if (isset($errors['email'])): ?>
-                <p role="alert">
+                <div class="invalid-feedback">
                     <?= escape($errors['email']) ?>
-                </p>
+                </div>
             <?php endif; ?>
         </div>
 
-        <div>
-            <label for="password">
+        <div class="mb-4">
+            <label
+                class="form-label"
+                for="password"
+            >
                 Mot de passe
             </label>
 
             <input
+                class="form-control<?= isset($errors['password'])
+                    ? ' is-invalid'
+                    : '' ?>"
                 type="password"
                 id="password"
                 name="password"
@@ -53,13 +74,16 @@ declare(strict_types=1);
             >
 
             <?php if (isset($errors['password'])): ?>
-                <p role="alert">
+                <div class="invalid-feedback">
                     <?= escape($errors['password']) ?>
-                </p>
+                </div>
             <?php endif; ?>
         </div>
 
-        <button type="submit">
+        <button
+            class="btn btn-primary"
+            type="submit"
+        >
             Se connecter
         </button>
     </form>

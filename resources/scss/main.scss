@@ -1,0 +1,12 @@
+@import "abstracts/variables";
+
+@import "../../node_modules/bootstrap/scss/bootstrap";
+
+@import "base/base";
+
+@import "layout/header";
+@import "layout/main";
+@import "layout/footer";
+
+@import "components/alerts";
+@import "components/buttons";
