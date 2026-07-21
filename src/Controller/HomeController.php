@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\AuthService;
 use App\Service\View;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -14,6 +15,7 @@ final class HomeController
 {
     public function __construct(
         private readonly View $view,
+        private readonly AuthService $authService,
     ) {
     }
 
@@ -22,7 +24,7 @@ final class HomeController
         return new Response(
             $this->view->render('home/index', [
                 'pageTitle' => 'Accueil',
-                'currentUser' => null,
+                'currentUser' => $this->authService->getUser(),
             ])
         );
     }

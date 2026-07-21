@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Service\AuthService;
 use App\Service\View;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -14,6 +15,7 @@ final class ErrorController
 {
     public function __construct(
         private readonly View $view,
+        private readonly AuthService $authService,
     ) {
     }
 
@@ -22,7 +24,7 @@ final class ErrorController
         return new Response(
             $this->view->render('error/404', [
                 'pageTitle' => 'Page introuvable',
-                'currentUser' => null,
+                'currentUser' => $this->authService->getUser(),
             ]),
             Response::HTTP_NOT_FOUND,
         );

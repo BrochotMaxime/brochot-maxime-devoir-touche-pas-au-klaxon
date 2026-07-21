@@ -5,6 +5,11 @@ declare(strict_types=1);
 use App\Controller\AuthController;
 use App\Controller\ErrorController;
 use App\Controller\HomeController;
+use App\Core\Database;
+use App\Core\DatabaseConfig;
+use App\Repository\UserRepository;
+use App\Service\AuthService;
+use App\Service\Session;
 use App\Service\View;
 use Buki\Router\Router;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,9 +21,32 @@ $view = new View(
     dirname(__DIR__) . '/templates'
 );
 
-$homeController = new HomeController($view);
-$authController = new AuthController($view);
-$errorController = new ErrorController($view);
+$databaseConfig = DatabaseConfig::fromEnvironment();
+$database = new Database($databaseConfig);
+$connection = $database->getConnection();
+
+$userRepository = new UserRepository($connection);
+
+$session = new Session();
+$authService = new AuthService(
+    $userRepository,
+    $session,
+);
+
+$homeController = new HomeController(
+    $view,
+    $authService,
+);
+
+$authController = new AuthController(
+    $view,
+    $authService,
+);
+
+$errorController = new ErrorController(
+    $view,
+    $authService,
+);
 
 $router->get(
     '/',
@@ -27,7 +55,22 @@ $router->get(
 
 $router->get(
     '/login',
-    fn (): Response => $authController->login(),
+    fn (): Response => $authController->showLogin(),
+);
+
+$router->post(
+    '/login',
+    function (
+        Request $request,
+        Response $_response,
+    ) use ($authController): Response {
+        return $authController->authenticate($request);
+    },
+);
+
+$router->post(
+    '/logout',
+    fn (): Response => $authController->logout(),
 );
 
 $router->notFound(
