@@ -1,77 +1,97 @@
-# Application architecture
+# Application Architecture
 
 ## Overview
 
-Touche pas au klaxon follows a Model-View-Controller architecture.
+Touche pas au klaxon is a PHP application built with a Model-View-Controller architecture.
 
-All HTTP requests enter the application through the front controller located at `public/index.php`.
+The project is designed to keep responsibilities separated and make the code reusable, maintainable and easy to understand.
 
-## Main directories
+All HTTP requests enter through `public/index.php`.
+
+## Main Directories
 
 ### `config/`
 
-Contains the application bootstrap and configuration files.
+Contains application configuration files:
+
+- `bootstrap.php`
+- `routes.php`
 
 ### `database/`
 
-Contains the database creation and initial data scripts.
+Contains the SQL scripts used to create and populate the database.
 
 ### `public/`
 
-Contains the front controller and publicly accessible assets.
+Contains the front controller and public assets.
 
-This directory must be used as the web server document root.
+The web server document root must point to this directory.
 
 ### `resources/`
 
-Contains source files that must be compiled, such as Sass stylesheets.
+Contains source files such as Sass stylesheets.
 
 ### `src/`
 
-Contains the PHP application source code and follows PSR-4 autoloading through the `App` namespace.
+Contains the PHP source code and follows PSR-4 autoloading through the `App` namespace.
 
-- `Controller/`: receives HTTP requests and coordinates responses.
-- `Core/`: contains reusable application infrastructure.
-- `Model/`: contains domain models.
-- `Repository/`: contains database access logic.
-- `Service/`: contains reusable business and application services.
+- `Controller/`: handles HTTP requests and responses
+- `Core/`: contains shared infrastructure
+- `Model/`: represents domain data
+- `Repository/`: contains database queries
+- `Service/`: contains reusable application logic
 
 ### `templates/`
 
-Contains PHP presentation templates.
+Contains PHP views.
 
-Templates must not execute database queries or contain business logic.
+Templates must not execute SQL queries or contain business logic.
 
 ### `tests/`
 
-Contains PHPUnit tests.
+Contains PHPUnit unit and integration tests.
 
-- `Unit/`: tests isolated classes and validation rules.
-- `Integration/`: tests interactions with infrastructure such as the database.
+## Request Lifecycle
 
-## Request lifecycle
-
-1. The web server directs the request to `public/index.php`.
-2. The front controller loads Composer and the application bootstrap.
-3. The router matches the requested URL.
-4. The corresponding controller is executed.
-5. The controller calls repositories or services.
-6. The controller renders a template or redirects the user.
-
-## Architectural principles
-
-- Keep controllers focused on HTTP request coordination.
-- Keep SQL queries inside repositories.
-- Keep business rules outside templates.
-- Reuse shared behavior through services and core components.
-- Use dependency injection instead of creating dependencies throughout the code.
+1. The browser sends a request.
+2. `router.php` forwards it to `public/index.php`.
+3. Composer and the application bootstrap are loaded.
+4. The router matches the requested URL.
+5. A controller is executed.
+6. The controller calls services or repositories.
+7. A response, template or redirect is returned.
 
 ## Routing
 
-Application routes are declared in `config/routes.php`.
+Routes are declared in `config/routes.php`.
 
-The `public/index.php` front controller loads the router configuration and executes the router.
+Unknown URLs return a custom HTTP 404 response.
 
-During local development, the root-level `router.php` script forwards non-static requests to the front controller when using PHP's built-in web server.
+## Environment Configuration
 
-Controllers are responsible for handling matched routes and returning HTTP responses.
+Local configuration is stored in `.env`.
+
+The file is excluded from Git.
+
+The `.env.example` file documents the required variables.
+
+## Database Connection
+
+The application uses PDO.
+
+`App\Core\DatabaseConfig` reads the database configuration.
+
+`App\Core\Database` provides the PDO connection.
+
+Repositories receive this connection and do not create their own.
+
+## Architectural Principles
+
+- one public entry point
+- separation of responsibilities
+- SQL isolated in repositories
+- thin controllers
+- simple templates
+- dependency injection
+- secure configuration
+- testable components
