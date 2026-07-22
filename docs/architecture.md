@@ -209,3 +209,13 @@ It displays summary counts retrieved through the user, agency and trip repositor
 Access to `/admin` is protected by the administrator guard.
 
 The dashboard provides navigation to the user, agency and trip administration sections.
+
+## User Administration
+
+The administrator user page displays employees retrieved through `UserRepository`.
+
+User data is read-only because employees are supplied by the company human resources system.
+
+Password hashes are never rendered in templates.
+
+Access to `/admin/users` is restricted to authenticated administrators.

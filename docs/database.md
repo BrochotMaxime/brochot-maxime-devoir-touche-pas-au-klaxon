@@ -43,7 +43,9 @@ Main constraints:
 - role limited to `ROLE_USER` or `ROLE_ADMIN`
 - password stored as a hash
 
-Employees cannot be created, modified or deleted through the application.
+The administrator interface provides read-only access to employee data.
+
+User creation, modification and deletion are intentionally unavailable because employees originate from the company HR system.
 
 ## agencies
 

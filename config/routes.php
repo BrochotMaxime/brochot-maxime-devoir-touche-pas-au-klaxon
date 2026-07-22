@@ -117,6 +117,23 @@ $router->get(
 );
 
 $router->get(
+    '/admin/users',
+    function () use (
+        $accessGuard,
+        $adminController,
+    ): Response {
+        $accessResponse = $accessGuard
+            ->requireAdministrator();
+
+        if ($accessResponse !== null) {
+            return $accessResponse;
+        }
+
+        return $adminController->users();
+    },
+);
+
+$router->get(
     '/trips/create',
     function () use (
         $accessGuard,
