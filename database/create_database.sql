@@ -1,5 +1,7 @@
 -- Create database "touche_pas_au_klaxon"
 
+SET NAMES utf8mb4;
+
 DROP DATABASE IF EXISTS touche_pas_au_klaxon;
 
 CREATE DATABASE touche_pas_au_klaxon

@@ -1,0 +1,25 @@
+.admin-list-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.admin-table {
+  min-width: 900px;
+}
+
+.admin-table thead {
+  background-color: $secondary;
+  color: $white;
+}
+
+.admin-table th,
+.admin-table td {
+  vertical-align: middle;
+}
+
+.admin-table a {
+  overflow-wrap: anywhere;
+}

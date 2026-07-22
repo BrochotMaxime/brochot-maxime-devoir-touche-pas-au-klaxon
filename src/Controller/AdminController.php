@@ -41,4 +41,15 @@ final class AdminController
             ])
         );
     }
+
+    public function users(): Response
+    {
+        return new Response(
+            $this->view->render('admin/users/index', [
+                'pageTitle' => 'Utilisateurs',
+                'currentUser' => $this->authService->getUser(),
+                'users' => $this->userRepository->findAll(),
+            ])
+        );
+    }
 }

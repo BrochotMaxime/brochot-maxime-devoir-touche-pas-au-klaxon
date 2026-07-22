@@ -71,9 +71,7 @@ declare(strict_types=1);
                 Utilisateurs
             </h2>
 
-            <p>
-                Consultez la liste des employés autorisés à utiliser l'application.
-            </p>
+            <p>Consultez la liste des employés autorisés à utiliser l'application.</p>
 
             <a
                 class="btn btn-primary"
@@ -88,8 +86,7 @@ declare(strict_types=1);
                 Agences
             </h2>
 
-            <p>Ajoutez, modifiez ou supprimez les agences de l'entreprise.
-            </p>
+            <p>Ajoutez, modifiez ou supprimez les agences de l'entreprise.</p>
 
             <a
                 class="btn btn-primary"
