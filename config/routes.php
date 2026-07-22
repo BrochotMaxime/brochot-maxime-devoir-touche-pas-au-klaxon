@@ -83,6 +83,7 @@ $tripController = new TripController(
     $tripRepository,
     $tripValidator,
     $flash,
+    $errorController,
 );
 
 $router->get(
@@ -127,6 +128,27 @@ $router->get(
     },
 );
 
+$router->get(
+    '/trips/:id/edit',
+    function (
+        Request $_request,
+        Response $_response,
+        string $id,
+    ) use (
+        $accessGuard,
+        $tripController,
+    ): Response {
+        $accessResponse = $accessGuard
+            ->requireAuthentication();
+
+        if ($accessResponse !== null) {
+            return $accessResponse;
+        }
+
+        return $tripController->edit((int) $id);
+    },
+);
+
 $router->post(
     '/trips',
     function (
@@ -143,6 +165,30 @@ $router->post(
         }
 
         return $tripController->store($request);
+    },
+);
+
+$router->post(
+    '/trips/:id/update',
+    function (
+        Request $request,
+        Response $_response,
+        string $id,
+    ) use (
+        $accessGuard,
+        $tripController,
+    ): Response {
+        $accessResponse = $accessGuard
+            ->requireAuthentication();
+
+        if ($accessResponse !== null) {
+            return $accessResponse;
+        }
+
+        return $tripController->update(
+            $request,
+            (int) $id,
+        );
     },
 );
 

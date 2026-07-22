@@ -189,3 +189,11 @@ The validator checks agencies, date consistency and seat values before a reposit
 The trip author is always retrieved from the authenticated session and is never accepted from submitted form data.
 
 After successful creation, the application follows the Post/Redirect/Get pattern and displays a flash message on the trip list.
+
+## Trip Ownership
+
+Trip edit operations verify ownership on the server before displaying the form and before applying the update.
+
+The edit button is displayed only for owned trips, but interface visibility is not considered an authorization mechanism.
+
+Creation and editing share the same form partial and validation service.
