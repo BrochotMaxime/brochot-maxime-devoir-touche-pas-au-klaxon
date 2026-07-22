@@ -231,3 +231,13 @@ Agency names are required, limited to 100 characters and unique.
 Before deletion, the repository verifies whether an agency is referenced by a trip. Database foreign keys remain the final referential integrity protection.
 
 Successful write operations follow the Post/Redirect/Get pattern and display a flash message on the agency list.
+
+## Trip Administration
+
+The administrator trip page displays every trip, including past and full trips.
+
+The list uses `AdminTripListItem`, a read model dedicated to administration.
+
+Administrators can delete any trip through a protected POST route.
+
+Employee ownership rules do not apply to administrator deletion, but administrator authorization is always checked server-side.
