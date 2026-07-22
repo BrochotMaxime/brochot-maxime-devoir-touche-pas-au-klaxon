@@ -1,0 +1,61 @@
+.admin-dashboard__heading {
+  margin-bottom: 2rem;
+}
+
+.admin-dashboard__statistics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.admin-stat-card {
+  padding: 1.5rem;
+  background-color: rgba($primary, 0.08);
+  border: 1px solid rgba($primary, 0.2);
+  border-radius: $border-radius-lg;
+  text-align: center;
+}
+
+.admin-stat-card__value {
+  margin-bottom: 0.25rem;
+  color: $primary;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.admin-stat-card__title {
+  margin: 0;
+  color: $dark;
+  font-size: 1rem;
+}
+
+.admin-dashboard__sections {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+.admin-section-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1.5rem;
+  border: 1px solid rgba($dark, 0.18);
+  border-radius: $border-radius-lg;
+  background-color: $white;
+}
+
+.admin-section-card h2 {
+  margin-bottom: 1rem;
+  color: $secondary;
+  font-size: 1.35rem;
+}
+
+.admin-section-card p {
+  margin-bottom: 1.5rem;
+}
+
+.admin-section-card .btn {
+  margin-top: auto;
+}

@@ -62,6 +62,15 @@ final class AgencyRepository
         return $agencies;
     }
 
+    public function countAll(): int
+    {
+        $statement = $this->connection->query(
+            'SELECT COUNT(*) FROM agencies'
+        );
+
+        return (int) $statement->fetchColumn();
+    }
+
     /**
      * @param array<string, mixed> $row
      */

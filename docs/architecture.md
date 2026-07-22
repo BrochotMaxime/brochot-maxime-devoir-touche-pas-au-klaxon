@@ -199,3 +199,13 @@ Edit and delete controls are displayed only for owned trips, but interface visib
 Creation and editing share the same form partial and validation service.
 
 Deletion uses a POST request and requires explicit user confirmation before the form is submitted.
+
+## Administrator Dashboard
+
+The administrator dashboard is handled by `AdminController`.
+
+It displays summary counts retrieved through the user, agency and trip repositories.
+
+Access to `/admin` is protected by the administrator guard.
+
+The dashboard provides navigation to the user, agency and trip administration sections.

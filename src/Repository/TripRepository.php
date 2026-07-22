@@ -252,6 +252,26 @@ final class TripRepository
         ]);
     }
 
+    public function countAll(): int
+    {
+        $statement = $this->connection->query(
+            'SELECT COUNT(*) FROM trips'
+        );
+
+        return (int) $statement->fetchColumn();
+    }
+
+    public function countUpcoming(): int
+    {
+        $statement = $this->connection->query(
+            'SELECT COUNT(*)
+            FROM trips
+            WHERE departure_datetime >= NOW()'
+        );
+
+        return (int) $statement->fetchColumn();
+    }
+
     /**
      * @param array<string, mixed> $row
      */
