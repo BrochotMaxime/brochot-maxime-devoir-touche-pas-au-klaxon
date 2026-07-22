@@ -18,6 +18,7 @@ use App\Service\View;
 use App\Service\AccessGuard;
 use App\Service\Flash;
 use App\Service\TripValidator;
+use App\Service\AgencyValidator;
 use Buki\Router\Router;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,6 +41,10 @@ $userRepository = new UserRepository($connection);
 $tripRepository = new TripRepository($connection);
 $agencyRepository = new AgencyRepository($connection);
 
+$agencyValidator = new AgencyValidator(
+    $agencyRepository,
+);
+
 $authService = new AuthService(
     $userRepository,
     $session,
@@ -51,6 +56,8 @@ $adminController = new AdminController(
     $userRepository,
     $agencyRepository,
     $tripRepository,
+    $agencyValidator,
+    $flash,
 );
 
 $homeController = new HomeController(
@@ -130,6 +137,126 @@ $router->get(
         }
 
         return $adminController->users();
+    },
+);
+
+$router->get(
+    '/admin/agencies',
+    function () use (
+        $accessGuard,
+        $adminController,
+    ): Response {
+        $accessResponse = $accessGuard
+            ->requireAdministrator();
+
+        if ($accessResponse !== null) {
+            return $accessResponse;
+        }
+
+        return $adminController->agencies();
+    },
+);
+
+$router->get(
+    '/admin/agencies/create',
+    function () use (
+        $accessGuard,
+        $adminController,
+    ): Response {
+        $accessResponse = $accessGuard
+            ->requireAdministrator();
+
+        if ($accessResponse !== null) {
+            return $accessResponse;
+        }
+
+        return $adminController->createAgency();
+    },
+);
+
+$router->post(
+    '/admin/agencies',
+    function (
+        Request $request,
+        Response $_response,
+    ) use (
+        $accessGuard,
+        $adminController,
+    ): Response {
+        $accessResponse = $accessGuard
+            ->requireAdministrator();
+
+        if ($accessResponse !== null) {
+            return $accessResponse;
+        }
+
+        return $adminController->storeAgency($request);
+    },
+);
+
+$router->get(
+    '/admin/agencies/:id/edit',
+    function (
+        Request $_request,
+        Response $_response,
+        string $id,
+    ) use (
+        $accessGuard,
+        $adminController,
+    ): Response {
+        $accessResponse = $accessGuard
+            ->requireAdministrator();
+
+        if ($accessResponse !== null) {
+            return $accessResponse;
+        }
+
+        return $adminController->editAgency((int) $id);
+    },
+);
+
+$router->post(
+    '/admin/agencies/:id/update',
+    function (
+        Request $request,
+        Response $_response,
+        string $id,
+    ) use (
+        $accessGuard,
+        $adminController,
+    ): Response {
+        $accessResponse = $accessGuard
+            ->requireAdministrator();
+
+        if ($accessResponse !== null) {
+            return $accessResponse;
+        }
+
+        return $adminController->updateAgency(
+            $request,
+            (int) $id,
+        );
+    },
+);
+
+$router->post(
+    '/admin/agencies/:id/delete',
+    function (
+        Request $_request,
+        Response $_response,
+        string $id,
+    ) use (
+        $accessGuard,
+        $adminController,
+    ): Response {
+        $accessResponse = $accessGuard
+            ->requireAdministrator();
+
+        if ($accessResponse !== null) {
+            return $accessResponse;
+        }
+
+        return $adminController->deleteAgency((int) $id);
     },
 );
 

@@ -40,6 +40,52 @@ final class AgencyRepository
         return $this->hydrate($row);
     }
 
+    public function findByName(string $name): ?Agency
+    {
+        $statement = $this->connection->prepare(
+            'SELECT
+                id,
+                name
+            FROM agencies
+            WHERE name = :name'
+        );
+
+        $statement->execute([
+            'name' => $name,
+        ]);
+
+        $row = $statement->fetch();
+
+        if ($row === false) {
+            return null;
+        }
+
+        return $this->hydrate($row);
+    }
+
+    public function existsByName(
+        string $name,
+        ?int $excludedId = null,
+    ): bool {
+        $sql = 'SELECT COUNT(*)
+            FROM agencies
+            WHERE name = :name';
+
+        $parameters = [
+            'name' => $name,
+        ];
+
+        if ($excludedId !== null) {
+            $sql .= ' AND id <> :excluded_id';
+            $parameters['excluded_id'] = $excludedId;
+        }
+
+        $statement = $this->connection->prepare($sql);
+        $statement->execute($parameters);
+
+        return (int) $statement->fetchColumn() > 0;
+    }
+
     /**
      * @return list<Agency>
      */
@@ -69,6 +115,63 @@ final class AgencyRepository
         );
 
         return (int) $statement->fetchColumn();
+    }
+
+    public function create(string $name): int
+    {
+        $statement = $this->connection->prepare(
+            'INSERT INTO agencies (name)
+            VALUES (:name)'
+        );
+
+        $statement->execute([
+            'name' => $name,
+        ]);
+
+        return (int) $this->connection->lastInsertId();
+    }
+
+    public function update(int $id, string $name): bool
+    {
+        $statement = $this->connection->prepare(
+            'UPDATE agencies
+            SET name = :name
+            WHERE id = :id'
+        );
+
+        return $statement->execute([
+            'id' => $id,
+            'name' => $name,
+        ]);
+    }
+
+    public function isUsedByTrips(int $id): bool
+    {
+        $statement = $this->connection->prepare(
+            'SELECT COUNT(*)
+            FROM trips
+            WHERE departure_agency_id = :departure_agency_id
+            OR arrival_agency_id = :arrival_agency_id'
+        );
+
+        $statement->execute([
+            'departure_agency_id' => $id,
+            'arrival_agency_id' => $id,
+        ]);
+
+        return (int) $statement->fetchColumn() > 0;
+    }
+
+    public function delete(int $id): bool
+    {
+        $statement = $this->connection->prepare(
+            'DELETE FROM agencies
+            WHERE id = :id'
+        );
+
+        return $statement->execute([
+            'id' => $id,
+        ]);
     }
 
     /**

@@ -23,3 +23,9 @@
 .admin-table a {
   overflow-wrap: anywhere;
 }
+
+.admin-table__actions {
+  width: 1%;
+  white-space: nowrap;
+  text-align: center;
+}
