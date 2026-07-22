@@ -3,9 +3,11 @@
 declare(strict_types=1);
 
 use App\Model\Agency;
+use App\Service\Csrf;
 
 /**
  * @var list<Agency> $agencies
+ * @var Csrf $csrf
  */
 ?>
 
@@ -104,6 +106,15 @@ use App\Model\Agency;
                                         method="post"
                                         data-agency-delete-form
                                     >
+                                        <?= csrfField(
+                                            $csrf->getToken(
+                                                sprintf(
+                                                    'agency_delete_%d',
+                                                    $agency->getId(),
+                                                )
+                                            )
+                                        ) ?>
+
                                         <button
                                             class="btn btn-sm btn-danger"
                                             type="submit"

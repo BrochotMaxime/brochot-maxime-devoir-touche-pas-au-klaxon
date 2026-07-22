@@ -10,6 +10,7 @@ use App\Service\AuthService;
 use App\Service\Flash;
 use App\Service\TripValidator;
 use App\Service\View;
+use App\Service\Csrf;
 use DateTimeImmutable;
 use LogicException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -29,6 +30,7 @@ final class TripController
         private readonly TripValidator $tripValidator,
         private readonly Flash $flash,
         private readonly ErrorController $errorController,
+        private readonly Csrf $csrf,
     ) {
     }
 
@@ -41,6 +43,9 @@ final class TripController
                 'agencies' => $this->agencyRepository->findAll(),
                 'errors' => [],
                 'old' => $this->getDefaultFormData(),
+                'csrfToken' => $this->csrf->getToken(
+                    'trip_create'
+                ),
             ])
         );
     }
@@ -90,6 +95,9 @@ final class TripController
                     'available_seats' =>
                         (string) $trip->getAvailableSeats(),
                 ],
+                'csrfToken' => $this->csrf->getToken(
+                    sprintf('trip_update_%d', $id)
+                ),
             ])
         );
     }
@@ -170,6 +178,9 @@ final class TripController
                     'trip' => $trip,
                     'errors' => $errors,
                     'old' => $data,
+                    'csrfToken' => $this->csrf->getToken(
+                        sprintf('trip_update_%d', $id)
+                    ),
                 ]),
                 Response::HTTP_UNPROCESSABLE_ENTITY,
             );
@@ -297,6 +308,9 @@ final class TripController
                     'agencies' => $this->agencyRepository->findAll(),
                     'errors' => $errors,
                     'old' => $data,
+                    'csrfToken' => $this->csrf->getToken(
+                        'trip_create'
+                    ),
                 ]),
                 Response::HTTP_UNPROCESSABLE_ENTITY,
             );

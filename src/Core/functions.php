@@ -15,3 +15,16 @@ if (!function_exists('escape')) {
         );
     }
 }
+
+if (!function_exists('csrfField')) {
+    /**
+     * Generates a hidden CSRF token input.
+     */
+    function csrfField(string $token): string
+    {
+        return sprintf(
+            '<input type="hidden" name="_csrf_token" value="%s">',
+            escape($token),
+        );
+    }
+}

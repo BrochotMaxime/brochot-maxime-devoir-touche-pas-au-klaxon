@@ -11,6 +11,7 @@ use App\Service\AuthService;
 use App\Service\View;
 use App\Service\AgencyValidator;
 use App\Service\Flash;
+use App\Service\Csrf;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,6 +29,7 @@ final class AdminController
         private readonly TripRepository $tripRepository,
         private readonly AgencyValidator $agencyValidator,
         private readonly Flash $flash,
+        private readonly Csrf $csrf,
     ) {
     }
 
@@ -80,6 +82,9 @@ final class AdminController
                 'old' => [
                     'name' => '',
                 ],
+                'csrfToken' => $this->csrf->getToken(
+                    'agency_create'
+                ),
             ])
         );
     }
@@ -101,6 +106,9 @@ final class AdminController
                     'old' => [
                         'name' => $name,
                     ],
+                    'csrfToken' => $this->csrf->getToken(
+                        'agency_create'
+                    ),
                 ]),
                 Response::HTTP_UNPROCESSABLE_ENTITY,
             );
@@ -121,7 +129,7 @@ final class AdminController
 
         if ($agency === null) {
             $this->flash->error(
-                'L’agence demandée est introuvable.'
+                'L\'agence demandée est introuvable.'
             );
 
             return new RedirectResponse('/admin/agencies');
@@ -136,6 +144,9 @@ final class AdminController
                 'old' => [
                     'name' => $agency->getName(),
                 ],
+                'csrfToken' => $this->csrf->getToken(
+                    sprintf('agency_update_%d', $id)
+                ),
             ])
         );
     }
@@ -148,7 +159,7 @@ final class AdminController
 
         if ($agency === null) {
             $this->flash->error(
-                'L’agence demandée est introuvable.'
+                'L\'agence demandée est introuvable.'
             );
 
             return new RedirectResponse('/admin/agencies');
@@ -173,6 +184,9 @@ final class AdminController
                     'old' => [
                         'name' => $name,
                     ],
+                    'csrfToken' => $this->csrf->getToken(
+                        sprintf('agency_update_%d', $id)
+                    ),
                 ]),
                 Response::HTTP_UNPROCESSABLE_ENTITY,
             );
@@ -193,7 +207,7 @@ final class AdminController
 
         if ($agency === null) {
             $this->flash->error(
-                'L’agence demandée est introuvable.'
+                'L\'agence demandée est introuvable.'
             );
 
             return new RedirectResponse('/admin/agencies');
@@ -210,7 +224,7 @@ final class AdminController
         $this->agencyRepository->delete($id);
 
         $this->flash->success(
-            'L’agence a été supprimée avec succès.'
+            'L\'agence a été supprimée avec succès.'
         );
 
         return new RedirectResponse('/admin/agencies');

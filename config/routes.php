@@ -9,6 +9,7 @@ use App\Controller\TripController;
 use App\Controller\AdminController;
 use App\Core\Database;
 use App\Core\DatabaseConfig;
+use App\Exception\InvalidCsrfTokenException;
 use App\Repository\UserRepository;
 use App\Repository\TripRepository;
 use App\Repository\AgencyRepository;
@@ -19,6 +20,8 @@ use App\Service\AccessGuard;
 use App\Service\Flash;
 use App\Service\TripValidator;
 use App\Service\AgencyValidator;
+use App\Service\Csrf;
+use App\Service\CsrfGuard;
 use Buki\Router\Router;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,11 +29,16 @@ use Symfony\Component\HttpFoundation\Response;
 $router = new Router();
 
 $session = new Session();
+
 $flash = new Flash($session);
+
+$csrf = new Csrf($session);
+$csrfGuard = new CsrfGuard($csrf);
 
 $view = new View(
     dirname(__DIR__) . '/templates',
     $flash,
+    $csrf,
 );
 
 $databaseConfig = DatabaseConfig::fromEnvironment();
@@ -58,6 +66,7 @@ $adminController = new AdminController(
     $tripRepository,
     $agencyValidator,
     $flash,
+    $csrf,
 );
 
 $homeController = new HomeController(
@@ -70,6 +79,7 @@ $authController = new AuthController(
     $view,
     $authService,
     $flash,
+    $csrf,
 );
 
 $errorController = new ErrorController(
@@ -94,7 +104,33 @@ $tripController = new TripController(
     $tripValidator,
     $flash,
     $errorController,
+    $csrf,
 );
+
+/**
+ * Executes an action after validating its CSRF token.
+ *
+ * @param callable(): Response $action
+ */
+$executeWithCsrf = static function (
+    Request $request,
+    string $formName,
+    callable $action,
+) use (
+    $csrfGuard,
+    $errorController,
+): Response {
+    try {
+        $csrfGuard->validate(
+            $request,
+            $formName,
+        );
+    } catch (InvalidCsrfTokenException) {
+        return $errorController->invalidCsrfToken();
+    }
+
+    return $action();
+};
 
 $router->get(
     '/',
@@ -142,7 +178,10 @@ $router->get(
 
 $router->get(
     '/admin/agencies',
-    function () use (
+    function (
+        Request $_request,
+        Response $_response,
+    ) use (
         $accessGuard,
         $adminController,
     ): Response {
@@ -182,6 +221,7 @@ $router->post(
     ) use (
         $accessGuard,
         $adminController,
+        $executeWithCsrf,
     ): Response {
         $accessResponse = $accessGuard
             ->requireAdministrator();
@@ -190,7 +230,12 @@ $router->post(
             return $accessResponse;
         }
 
-        return $adminController->storeAgency($request);
+        return $executeWithCsrf(
+            $request,
+            'agency_create',
+            fn (): Response => $adminController
+                ->storeAgency($request),
+        );
     },
 );
 
@@ -224,6 +269,7 @@ $router->post(
     ) use (
         $accessGuard,
         $adminController,
+        $executeWithCsrf,
     ): Response {
         $accessResponse = $accessGuard
             ->requireAdministrator();
@@ -232,9 +278,13 @@ $router->post(
             return $accessResponse;
         }
 
-        return $adminController->updateAgency(
+        return $executeWithCsrf(
             $request,
-            (int) $id,
+            sprintf('agency_update_%d', (int) $id),
+            fn (): Response => $adminController->updateAgency(
+                $request,
+                (int) $id,
+            ),
         );
     },
 );
@@ -242,12 +292,13 @@ $router->post(
 $router->post(
     '/admin/agencies/:id/delete',
     function (
-        Request $_request,
+        Request $request,
         Response $_response,
         string $id,
     ) use (
         $accessGuard,
         $adminController,
+        $executeWithCsrf,
     ): Response {
         $accessResponse = $accessGuard
             ->requireAdministrator();
@@ -256,7 +307,12 @@ $router->post(
             return $accessResponse;
         }
 
-        return $adminController->deleteAgency((int) $id);
+        return $executeWithCsrf(
+            $request,
+            sprintf('agency_delete_%d', (int) $id),
+            fn (): Response => $adminController
+                ->deleteAgency((int) $id),
+        );
     },
 );
 
@@ -280,12 +336,13 @@ $router->get(
 $router->post(
     '/admin/trips/:id/delete',
     function (
-        Request $_request,
+        Request $request,
         Response $_response,
         string $id,
     ) use (
         $accessGuard,
         $adminController,
+        $executeWithCsrf,
     ): Response {
         $accessResponse = $accessGuard
             ->requireAdministrator();
@@ -294,7 +351,13 @@ $router->post(
             return $accessResponse;
         }
 
-        return $adminController->deleteTrip((int) $id);
+        return $executeWithCsrf(
+            $request,
+            sprintf('admin_trip_delete_%d', (int) $id),
+            fn (): Response => $adminController->deleteTrip(
+                (int) $id,
+            ),
+        );
     },
 );
 
@@ -343,14 +406,20 @@ $router->post(
     ) use (
         $accessGuard,
         $tripController,
+        $executeWithCsrf,
     ): Response {
-        $accessResponse = $accessGuard->requireAuthentication();
+        $accessResponse = $accessGuard
+            ->requireAuthentication();
 
         if ($accessResponse !== null) {
             return $accessResponse;
         }
 
-        return $tripController->store($request);
+        return $executeWithCsrf(
+            $request,
+            'trip_create',
+            fn (): Response => $tripController->store($request),
+        );
     },
 );
 
@@ -363,6 +432,7 @@ $router->post(
     ) use (
         $accessGuard,
         $tripController,
+        $executeWithCsrf,
     ): Response {
         $accessResponse = $accessGuard
             ->requireAuthentication();
@@ -371,9 +441,16 @@ $router->post(
             return $accessResponse;
         }
 
-        return $tripController->update(
+        return $executeWithCsrf(
             $request,
-            (int) $id,
+            sprintf(
+                'trip_update_%d',
+                (int) $id,
+            ),
+            fn (): Response => $tripController->update(
+                $request,
+                (int) $id,
+            ),
         );
     },
 );
@@ -381,12 +458,13 @@ $router->post(
 $router->post(
     '/trips/:id/delete',
     function (
-        Request $_request,
+        Request $request,
         Response $_response,
         string $id,
     ) use (
         $accessGuard,
         $tripController,
+        $executeWithCsrf,
     ): Response {
         $accessResponse = $accessGuard
             ->requireAuthentication();
@@ -395,7 +473,11 @@ $router->post(
             return $accessResponse;
         }
 
-        return $tripController->delete((int) $id);
+        return $executeWithCsrf(
+            $request,
+            sprintf('trip_delete_%d', (int) $id),
+            fn (): Response => $tripController->delete((int) $id),
+        );
     },
 );
 
@@ -404,14 +486,34 @@ $router->post(
     function (
         Request $request,
         Response $_response,
-    ) use ($authController): Response {
-        return $authController->authenticate($request);
+    ) use (
+        $authController,
+        $executeWithCsrf,
+    ): Response {
+        return $executeWithCsrf(
+            $request,
+            'login',
+            fn (): Response => $authController
+                ->authenticate($request),
+        );
     },
 );
 
 $router->post(
     '/logout',
-    fn (): Response => $authController->logout(),
+    function (
+        Request $request,
+        Response $_response,
+    ) use (
+        $authController,
+        $executeWithCsrf,
+    ): Response {
+        return $executeWithCsrf(
+            $request,
+            'logout',
+            fn (): Response => $authController->logout(),
+        );
+    },
 );
 
 $router->notFound(

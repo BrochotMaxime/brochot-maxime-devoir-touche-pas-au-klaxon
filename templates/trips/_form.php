@@ -11,19 +11,18 @@ use App\Model\Agency;
  * @var array<string, string> $old
  * @var string $formAction
  * @var string $submitLabel
+ * @var string $csrfToken
  */
 ?>
 
 <section class="page-section">
-  <h1 class="page-section__title">
-      Créer un trajet
-  </h1>
-
   <form
       action="<?= escape($formAction) ?>"
       method="post"
       novalidate
   >
+    <?= csrfField($csrfToken) ?>
+
     <fieldset class="mb-4">
       <legend class="fs-5">
         Personne à contacter
