@@ -169,3 +169,13 @@ List pages may use dedicated read models when their data differs from the main d
 `TripListItem` represents the joined trip and agency information required by the public home page.
 
 The corresponding SQL query remains inside `TripRepository`.
+
+## Authenticated Trip Details
+
+The public trip query also retrieves the author and total seat information required by authenticated users.
+
+Private trip details are rendered only when a user is authenticated. They must not be included in the visitor HTML output.
+
+A shared Bootstrap modal is populated from button data attributes by `public/assets/js/trip-details-modal.js`.
+
+Dynamic values are inserted with `textContent` to avoid interpreting database content as HTML.

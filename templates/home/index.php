@@ -56,6 +56,15 @@ use App\Model\TripListItem;
                         <th scope="col">
                             Places disponibles
                         </th>
+
+                        <?php if ($currentUser !== null): ?>
+                            <th
+                                class="trip-table__actions"
+                                scope="col"
+                            >
+                                Actions
+                            </th>
+                        <?php endif; ?>
                     </tr>
                 </thead>
 
@@ -111,6 +120,36 @@ use App\Model\TripListItem;
                                     $trip->getAvailableSeats()
                                 ) ?>
                             </td>
+
+                            <?php if ($currentUser !== null): ?>
+                                <td class="trip-table__actions">
+                                    <button
+                                        class="btn btn-sm btn-primary"
+                                        type="button"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#trip-details-modal"
+                                        data-trip-author="<?= escape(
+                                            $trip->getAuthorFullName()
+                                        ) ?>"
+                                        data-trip-phone="<?= escape(
+                                            $trip->getAuthorPhone()
+                                        ) ?>"
+                                        data-trip-email="<?= escape(
+                                            $trip->getAuthorEmail()
+                                        ) ?>"
+                                        data-trip-total-seats="<?= escape(
+                                            $trip->getTotalSeats()
+                                        ) ?>"
+                                        aria-label="Afficher les détails du trajet de <?= escape(
+                                            $trip->getDepartureAgency()
+                                        ) ?> vers <?= escape(
+                                            $trip->getArrivalAgency()
+                                        ) ?>"
+                                    >
+                                        Détails
+                                    </button>
+                                </td>
+                            <?php endif; ?>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -118,3 +157,67 @@ use App\Model\TripListItem;
         </div>
     <?php endif; ?>
 </section>
+
+<?php if ($currentUser !== null && $trips !== []): ?>
+    <div
+        class="modal fade"
+        id="trip-details-modal"
+        tabindex="-1"
+        aria-labelledby="trip-details-modal-title"
+        aria-hidden="true"
+    >
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2
+                        class="modal-title fs-5"
+                        id="trip-details-modal-title"
+                    >
+                        Informations complémentaires
+                    </h2>
+
+                    <button
+                        class="btn-close"
+                        type="button"
+                        data-bs-dismiss="modal"
+                        aria-label="Fermer"
+                    ></button>
+                </div>
+
+                <div class="modal-body">
+                    <dl class="trip-details">
+                        <div class="trip-details__row">
+                            <dt>Personne à contacter</dt>
+                            <dd data-trip-detail="author"></dd>
+                        </div>
+
+                        <div class="trip-details__row">
+                            <dt>Téléphone</dt>
+                            <dd data-trip-detail="phone"></dd>
+                        </div>
+
+                        <div class="trip-details__row">
+                            <dt>Adresse email</dt>
+                            <dd data-trip-detail="email"></dd>
+                        </div>
+
+                        <div class="trip-details__row">
+                            <dt>Nombre total de places</dt>
+                            <dd data-trip-detail="total-seats"></dd>
+                        </div>
+                    </dl>
+                </div>
+
+                <div class="modal-footer">
+                    <button
+                        class="btn btn-secondary"
+                        type="button"
+                        data-bs-dismiss="modal"
+                    >
+                        Fermer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>

@@ -11998,3 +11998,32 @@ h3,
 .trip-table td:last-child {
   text-align: center;
 }
+
+.trip-table__actions {
+  white-space: nowrap;
+  text-align: center;
+}
+
+.trip-details {
+  margin: 0;
+}
+
+.trip-details__row {
+  display: grid;
+  grid-template-columns: minmax(10rem, 1fr) 1.5fr;
+  gap: 1rem;
+  padding-block: 0.75rem;
+  border-bottom: 1px solid rgba(56, 64, 80, 0.15);
+}
+.trip-details__row:last-child {
+  border-bottom: 0;
+}
+
+.trip-details dt {
+  color: #00497c;
+  font-weight: 700;
+}
+
+.trip-details dd {
+  margin: 0;
+}

@@ -26,7 +26,9 @@ final class AuthController
     public function showLogin(): Response
     {
         if ($this->authService->isAuthenticated()) {
-            return new RedirectResponse('/');
+            return new RedirectResponse(
+                $this->authService->getRedirectPath()
+            );
         }
 
         return new Response(
@@ -42,7 +44,9 @@ final class AuthController
     public function authenticate(Request $request): Response
     {
         if ($this->authService->isAuthenticated()) {
-            return new RedirectResponse('/');
+            return new RedirectResponse(
+                $this->authService->getRedirectPath()
+            );
         }
 
         $email = trim((string) $request->request->get('email', ''));
@@ -82,7 +86,9 @@ final class AuthController
             'Vous êtes maintenant connecté.'
         );
 
-        return new RedirectResponse('/');
+        return new RedirectResponse(
+            $this->authService->getRedirectPath()
+        );
     }
 
     public function logout(): Response
