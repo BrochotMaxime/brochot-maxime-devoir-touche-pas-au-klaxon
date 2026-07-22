@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Service\AuthService;
 use App\Service\View;
 use App\Service\Flash;
+use App\Service\Csrf;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,6 +21,7 @@ final class AuthController
         private readonly View $view,
         private readonly AuthService $authService,
         private readonly Flash $flash,
+        private readonly Csrf $csrf,
     ) {
     }
 
@@ -37,6 +39,7 @@ final class AuthController
                 'currentUser' => null,
                 'errors' => [],
                 'old' => [],
+                'csrfToken' => $this->csrf->getToken('login'),
             ])
         );
     }
@@ -77,6 +80,7 @@ final class AuthController
                     'old' => [
                         'email' => $email,
                     ],
+                    'csrfToken' => $this->csrf->getToken('login'),
                 ]),
                 Response::HTTP_UNPROCESSABLE_ENTITY,
             );

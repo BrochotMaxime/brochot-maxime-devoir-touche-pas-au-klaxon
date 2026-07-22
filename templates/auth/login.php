@@ -5,6 +5,7 @@ declare(strict_types=1);
 /**
  * @var array<string, string> $errors
  * @var array<string, string> $old
+ * @var string $csrfToken
  */
 ?>
 
@@ -27,6 +28,8 @@ declare(strict_types=1);
         method="post"
         novalidate
     >
+        <?= csrfField($csrfToken) ?>
+        
         <div class="mb-3">
             <label
                 class="form-label"

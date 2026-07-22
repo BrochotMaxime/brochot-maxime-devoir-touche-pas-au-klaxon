@@ -3,10 +3,12 @@
 declare(strict_types=1);
 
 use App\Model\TripListItem;
+use App\Service\Csrf;
 
 /**
  * @var list<TripListItem> $trips
  * @var array<string, mixed>|null $currentUser
+ * @var Csrf $csrf
  */
 ?>
 
@@ -150,6 +152,15 @@ use App\Model\TripListItem;
                                                 method="post"
                                                 data-trip-delete-form
                                             >
+                                                <?= csrfField(
+                                                    $csrf->getToken(
+                                                        sprintf(
+                                                            'trip_delete_%d',
+                                                            $trip->getId(),
+                                                        )
+                                                    )
+                                                ) ?>
+
                                                 <button
                                                     class="btn btn-sm btn-danger"
                                                     type="submit"

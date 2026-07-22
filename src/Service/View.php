@@ -14,6 +14,7 @@ final class View
     public function __construct(
         private readonly string $templatePath,
         private readonly Flash $flash,
+        private readonly Csrf $csrf,
     ) {
     }
 
@@ -27,10 +28,18 @@ final class View
         array $data = [],
         string $layout = 'layouts/base',
     ): string {
-        $content = $this->renderTemplate($template, $data);
-    
-        return $this->renderTemplate($layout, [
+        $templateData = [
             ...$data,
+            'csrf' => $this->csrf,
+        ];
+
+        $content = $this->renderTemplate(
+            $template,
+            $templateData,
+        );
+
+        return $this->renderTemplate($layout, [
+            ...$templateData,
             'content' => $content,
             'flashMessages' => $this->flash->consume(),
         ]);

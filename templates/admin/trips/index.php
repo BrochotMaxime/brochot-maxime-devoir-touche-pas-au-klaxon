@@ -3,9 +3,11 @@
 declare(strict_types=1);
 
 use App\Model\AdminTripListItem;
+use App\Service\Csrf;
 
 /**
  * @var list<AdminTripListItem> $trips
+ * @var Csrf $csrf
  */
 ?>
 
@@ -171,6 +173,15 @@ use App\Model\AdminTripListItem;
                                     method="post"
                                     data-admin-trip-delete-form
                                 >
+                                    <?= csrfField(
+                                        $csrf->getToken(
+                                            sprintf(
+                                                'admin_trip_delete_%d',
+                                                $trip->getId(),
+                                            )
+                                        )
+                                    ) ?>
+
                                     <button
                                         class="btn btn-sm btn-danger"
                                         type="submit"

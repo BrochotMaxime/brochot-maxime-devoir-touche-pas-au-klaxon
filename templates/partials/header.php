@@ -64,6 +64,8 @@ $isAdmin = $isAuthenticated
                 action="/logout"
                 method="post"
             >
+                <?= csrfField($csrf->getToken('logout')) ?>
+
                 <button
                     class="btn btn-light"
                     type="submit"
@@ -91,6 +93,8 @@ $isAdmin = $isAuthenticated
                 action="/logout"
                 method="post"
             >
+                <?= csrfField($csrf->getToken('logout')) ?>
+
                 <button
                     class="btn btn-light"
                     type="submit"

@@ -7,6 +7,7 @@ declare(strict_types=1);
  * @var array<string, string> $old
  * @var string $formAction
  * @var string $submitLabel
+ * @var string $csrfToken
  */
 ?>
 
@@ -15,6 +16,8 @@ declare(strict_types=1);
     method="post"
     novalidate
 >
+    <?= csrfField($csrfToken) ?>
+
     <div class="mb-4">
         <label
             class="form-label"

@@ -30,6 +30,17 @@ final class ErrorController
         );
     }
 
+    public function invalidCsrfToken(): Response
+    {
+        return new Response(
+            $this->view->render('error/419', [
+                'pageTitle' => 'Session expirée',
+                'currentUser' => $this->authService->getUser(),
+            ]),
+            419,
+        );
+    }
+
     public function notFound(): Response
     {
         return new Response(
