@@ -153,6 +153,54 @@ final class TripRepository
     }
 
     /**
+     * Creates a trip and returns its identifier.
+     *
+     * @param array{
+     *     departure_datetime: string,
+     *     arrival_datetime: string,
+     *     total_seats: int,
+     *     available_seats: int,
+     *     author_id: int,
+     *     departure_agency_id: int,
+     *     arrival_agency_id: int
+     * } $data
+     */
+    public function create(array $data): int
+    {
+        $statement = $this->connection->prepare(
+            'INSERT INTO trips (
+                departure_datetime,
+                arrival_datetime,
+                total_seats,
+                available_seats,
+                author_id,
+                departure_agency_id,
+                arrival_agency_id
+            ) VALUES (
+                :departure_datetime,
+                :arrival_datetime,
+                :total_seats,
+                :available_seats,
+                :author_id,
+                :departure_agency_id,
+                :arrival_agency_id
+            )'
+        );
+
+        $statement->execute([
+            'departure_datetime' => $data['departure_datetime'],
+            'arrival_datetime' => $data['arrival_datetime'],
+            'total_seats' => $data['total_seats'],
+            'available_seats' => $data['available_seats'],
+            'author_id' => $data['author_id'],
+            'departure_agency_id' => $data['departure_agency_id'],
+            'arrival_agency_id' => $data['arrival_agency_id'],
+        ]);
+
+        return (int) $this->connection->lastInsertId();
+    }
+
+    /**
      * @param array<string, mixed> $row
      */
     private function hydrate(array $row): Trip

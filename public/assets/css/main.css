@@ -12027,3 +12027,21 @@ h3,
 .trip-details dd {
   margin: 0;
 }
+
+fieldset {
+  padding: 1.5rem;
+  border: 1px solid rgba(56, 64, 80, 0.2);
+  border-radius: 0.25rem;
+}
+
+legend {
+  width: auto;
+  margin-bottom: 1rem;
+  padding-inline: 0.5rem;
+  color: #00497c;
+  font-weight: 700;
+}
+
+.form-control[readonly] {
+  background-color: rgba(56, 64, 80, 0.05);
+}

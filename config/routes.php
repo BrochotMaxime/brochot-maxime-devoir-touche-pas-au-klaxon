@@ -6,15 +6,18 @@ use App\Controller\AuthController;
 use App\Controller\ErrorController;
 use App\Controller\HomeController;
 use App\Controller\ProtectedPageController;
+use App\Controller\TripController;
 use App\Core\Database;
 use App\Core\DatabaseConfig;
 use App\Repository\UserRepository;
 use App\Repository\TripRepository;
+use App\Repository\AgencyRepository;
 use App\Service\AuthService;
 use App\Service\Session;
 use App\Service\View;
 use App\Service\AccessGuard;
 use App\Service\Flash;
+use App\Service\TripValidator;
 use Buki\Router\Router;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,6 +38,7 @@ $connection = $database->getConnection();
 
 $userRepository = new UserRepository($connection);
 $tripRepository = new TripRepository($connection);
+$agencyRepository = new AgencyRepository($connection);
 
 $authService = new AuthService(
     $userRepository,
@@ -68,6 +72,19 @@ $protectedPageController = new ProtectedPageController(
     $authService,
 );
 
+$tripValidator = new TripValidator(
+    $agencyRepository,
+);
+
+$tripController = new TripController(
+    $view,
+    $authService,
+    $agencyRepository,
+    $tripRepository,
+    $tripValidator,
+    $flash,
+);
+
 $router->get(
     '/',
     fn (): Response => $homeController->index(),
@@ -98,7 +115,7 @@ $router->get(
     '/trips/create',
     function () use (
         $accessGuard,
-        $protectedPageController,
+        $tripController,
     ): Response {
         $accessResponse = $accessGuard->requireAuthentication();
 
@@ -106,7 +123,26 @@ $router->get(
             return $accessResponse;
         }
 
-        return $protectedPageController->createTrip();
+        return $tripController->create();
+    },
+);
+
+$router->post(
+    '/trips',
+    function (
+        Request $request,
+        Response $_response,
+    ) use (
+        $accessGuard,
+        $tripController,
+    ): Response {
+        $accessResponse = $accessGuard->requireAuthentication();
+
+        if ($accessResponse !== null) {
+            return $accessResponse;
+        }
+
+        return $tripController->store($request);
     },
 );
 

@@ -179,3 +179,13 @@ Private trip details are rendered only when a user is authenticated. They must n
 A shared Bootstrap modal is populated from button data attributes by `public/assets/js/trip-details-modal.js`.
 
 Dynamic values are inserted with `textContent` to avoid interpreting database content as HTML.
+
+## Trip Validation
+
+Trip creation and update rules are handled by `App\Service\TripValidator`.
+
+The validator checks agencies, date consistency and seat values before a repository write operation is attempted.
+
+The trip author is always retrieved from the authenticated session and is never accepted from submitted form data.
+
+After successful creation, the application follows the Post/Redirect/Get pattern and displays a flash message on the trip list.
