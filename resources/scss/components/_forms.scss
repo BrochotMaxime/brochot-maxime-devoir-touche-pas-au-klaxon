@@ -1,0 +1,17 @@
+fieldset {
+  padding: 1.5rem;
+  border: 1px solid rgba($dark, 0.2);
+  border-radius: $border-radius;
+}
+
+legend {
+  width: auto;
+  margin-bottom: 1rem;
+  padding-inline: 0.5rem;
+  color: $secondary;
+  font-weight: 700;
+}
+
+.form-control[readonly] {
+  background-color: rgba($dark, 0.05);
+}

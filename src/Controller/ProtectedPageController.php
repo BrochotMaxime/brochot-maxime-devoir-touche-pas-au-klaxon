@@ -19,16 +19,6 @@ final class ProtectedPageController
     ) {
     }
 
-    public function createTrip(): Response
-    {
-        return new Response(
-            $this->view->render('trips/create', [
-                'pageTitle' => 'Créer un trajet',
-                'currentUser' => $this->authService->getUser(),
-            ])
-        );
-    }
-
     public function adminDashboard(): Response
     {
         return new Response(
