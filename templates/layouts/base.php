@@ -45,5 +45,6 @@ $documentTitle = isset($pageTitle)
 
         <script src="/assets/js/bootstrap.bundle.min.js"></script>
         <script src="/assets/js/trip-details-modal.js"></script>
+        <script src="/assets/js/trip-delete-confirmation.js"></script>
     </body>
 </html>

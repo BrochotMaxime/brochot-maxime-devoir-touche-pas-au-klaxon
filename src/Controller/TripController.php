@@ -205,6 +205,39 @@ final class TripController
         return new RedirectResponse('/');
     }
 
+    public function delete(int $id): Response
+    {
+        $currentUser = $this->authService->getUser();
+
+        if ($currentUser === null) {
+            throw new LogicException(
+                'An authenticated user is required to delete a trip.'
+            );
+        }
+
+        $trip = $this->tripRepository->findById($id);
+
+        if ($trip === null) {
+            $this->flash->error(
+                'Le trajet demandé est introuvable.'
+            );
+
+            return new RedirectResponse('/');
+        }
+
+        if (!$trip->isOwnedBy((int) $currentUser['id'])) {
+            return $this->errorController->forbidden();
+        }
+
+        $this->tripRepository->delete($id);
+
+        $this->flash->success(
+            'Le trajet a été supprimé avec succès.'
+        );
+
+        return new RedirectResponse('/');
+    }
+
     public function store(Request $request): Response
     {
         $currentUser = $this->authService->getUser();

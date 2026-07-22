@@ -192,8 +192,10 @@ After successful creation, the application follows the Post/Redirect/Get pattern
 
 ## Trip Ownership
 
-Trip edit operations verify ownership on the server before displaying the form and before applying the update.
+Trip edit and delete operations verify ownership on the server before any action is performed.
 
-The edit button is displayed only for owned trips, but interface visibility is not considered an authorization mechanism.
+Edit and delete controls are displayed only for owned trips, but interface visibility is not considered an authorization mechanism.
 
 Creation and editing share the same form partial and validation service.
+
+Deletion uses a POST request and requires explicit user confirmation before the form is submitted.

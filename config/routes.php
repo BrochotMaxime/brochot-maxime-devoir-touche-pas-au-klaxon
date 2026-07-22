@@ -193,6 +193,27 @@ $router->post(
 );
 
 $router->post(
+    '/trips/:id/delete',
+    function (
+        Request $_request,
+        Response $_response,
+        string $id,
+    ) use (
+        $accessGuard,
+        $tripController,
+    ): Response {
+        $accessResponse = $accessGuard
+            ->requireAuthentication();
+
+        if ($accessResponse !== null) {
+            return $accessResponse;
+        }
+
+        return $tripController->delete((int) $id);
+    },
+);
+
+$router->post(
     '/login',
     function (
         Request $request,
