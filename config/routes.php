@@ -5,8 +5,8 @@ declare(strict_types=1);
 use App\Controller\AuthController;
 use App\Controller\ErrorController;
 use App\Controller\HomeController;
-use App\Controller\ProtectedPageController;
 use App\Controller\TripController;
+use App\Controller\AdminController;
 use App\Core\Database;
 use App\Core\DatabaseConfig;
 use App\Repository\UserRepository;
@@ -45,6 +45,14 @@ $authService = new AuthService(
     $session,
 );
 
+$adminController = new AdminController(
+    $view,
+    $authService,
+    $userRepository,
+    $agencyRepository,
+    $tripRepository,
+);
+
 $homeController = new HomeController(
     $view,
     $authService,
@@ -65,11 +73,6 @@ $errorController = new ErrorController(
 $accessGuard = new AccessGuard(
     $authService,
     $errorController,
-);
-
-$protectedPageController = new ProtectedPageController(
-    $view,
-    $authService,
 );
 
 $tripValidator = new TripValidator(
@@ -100,15 +103,16 @@ $router->get(
     '/admin',
     function () use (
         $accessGuard,
-        $protectedPageController,
+        $adminController,
     ): Response {
-        $accessResponse = $accessGuard->requireAdministrator();
+        $accessResponse = $accessGuard
+            ->requireAdministrator();
 
         if ($accessResponse !== null) {
             return $accessResponse;
         }
 
-        return $protectedPageController->adminDashboard();
+        return $adminController->dashboard();
     },
 );
 
