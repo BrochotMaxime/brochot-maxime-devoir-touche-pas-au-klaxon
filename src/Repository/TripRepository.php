@@ -238,6 +238,21 @@ final class TripRepository
     }
 
     /**
+     * Deletes a trip by its identifier.
+     */
+    public function delete(int $id): bool
+    {
+        $statement = $this->connection->prepare(
+            'DELETE FROM trips
+            WHERE id = :id'
+        );
+
+        return $statement->execute([
+            'id' => $id,
+        ]);
+    }
+
+    /**
      * @param array<string, mixed> $row
      */
     private function hydrate(array $row): Trip

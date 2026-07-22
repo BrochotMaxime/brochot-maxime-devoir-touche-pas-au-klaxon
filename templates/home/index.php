@@ -123,43 +123,42 @@ use App\Model\TripListItem;
 
                             <?php if ($currentUser !== null): ?>
                                 <td class="trip-table__actions">
-                                    <button
-                                        class="btn btn-sm btn-primary"
-                                        type="button"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#trip-details-modal"
-                                        data-trip-author="<?= escape(
-                                            $trip->getAuthorFullName()
-                                        ) ?>"
-                                        data-trip-phone="<?= escape(
-                                            $trip->getAuthorPhone()
-                                        ) ?>"
-                                        data-trip-email="<?= escape(
-                                            $trip->getAuthorEmail()
-                                        ) ?>"
-                                        data-trip-total-seats="<?= escape(
-                                            $trip->getTotalSeats()
-                                        ) ?>"
-                                        aria-label="Afficher les détails du trajet de <?= escape(
-                                            $trip->getDepartureAgency()
-                                        ) ?> vers <?= escape(
-                                            $trip->getArrivalAgency()
-                                        ) ?>"
-                                    >
-                                        Détails
-                                    </button>
-
-                                    <?php if (
-                                        isset($currentUser['id'])
-                                        && $trip->isOwnedBy((int) $currentUser['id'])
-                                    ): ?>
-                                        <a
-                                            class="btn btn-sm btn-secondary"
-                                            href="/trips/<?= escape($trip->getId()) ?>/edit"
+                                    <div class="d-flex flex-wrap justify-content-center gap-2">
+                                        <button
+                                            class="btn btn-sm btn-primary"
+                                            type="button"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#trip-details-modal"
                                         >
-                                            Modifier
-                                        </a>
-                                    <?php endif; ?>
+                                            Détails
+                                        </button>
+
+                                        <?php if (
+                                            isset($currentUser['id'])
+                                            && $trip->isOwnedBy((int) $currentUser['id'])
+                                        ): ?>
+                                            <a
+                                                class="btn btn-sm btn-secondary"
+                                                href="/trips/<?= escape($trip->getId()) ?>/edit"
+                                            >
+                                                Modifier
+                                            </a>
+
+                                            <form
+                                                class="m-0"
+                                                action="/trips/<?= escape($trip->getId()) ?>/delete"
+                                                method="post"
+                                                data-trip-delete-form
+                                            >
+                                                <button
+                                                    class="btn btn-sm btn-danger"
+                                                    type="submit"
+                                                >
+                                                    Supprimer
+                                                </button>
+                                            </form>
+                                        <?php endif; ?>
+                                    </div>
                                 </td>
                             <?php endif; ?>
                         </tr>
