@@ -219,3 +219,15 @@ User data is read-only because employees are supplied by the company human resou
 Password hashes are never rendered in templates.
 
 Access to `/admin/users` is restricted to authenticated administrators.
+
+## Agency Administration
+
+Agency administration is restricted to authenticated administrators.
+
+Agency creation and editing share a reusable form partial and `AgencyValidator`.
+
+Agency names are required, limited to 100 characters and unique.
+
+Before deletion, the repository verifies whether an agency is referenced by a trip. Database foreign keys remain the final referential integrity protection.
+
+Successful write operations follow the Post/Redirect/Get pattern and display a flash message on the agency list.
