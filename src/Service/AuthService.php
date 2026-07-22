@@ -95,4 +95,11 @@ final class AuthService
         return $user !== null
             && $user['role'] === 'ROLE_ADMIN';
     }
+
+    public function getRedirectPath(): string
+    {
+        return $this->isAdmin()
+            ? '/admin'
+            : '/';
+    }
 }

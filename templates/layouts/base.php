@@ -42,5 +42,8 @@ $documentTitle = isset($pageTitle)
         </main>
 
         <?php require dirname(__DIR__) . '/partials/footer.php'; ?>
+
+        <script src="/assets/js/bootstrap.bundle.min.js"></script>
+        <script src="/assets/js/trip-details-modal.js"></script>
     </body>
 </html>
