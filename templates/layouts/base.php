@@ -47,5 +47,6 @@ $documentTitle = isset($pageTitle)
         <script src="/assets/js/trip-details-modal.js"></script>
         <script src="/assets/js/trip-delete-confirmation.js"></script>
         <script src="/assets/js/agency-delete-confirmation.js"></script>
+        <script src="/assets/js/admin-trip-delete-confirmation.js"></script>
     </body>
 </html>

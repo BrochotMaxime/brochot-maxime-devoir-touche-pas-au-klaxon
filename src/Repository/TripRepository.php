@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Model\Trip;
 use App\Model\TripListItem;
+use App\Model\AdminTripListItem;
 
 use DateTimeImmutable;
 use PDO;
@@ -72,6 +73,44 @@ final class TripRepository
 
         foreach ($statement->fetchAll() as $row) {
             $trips[] = $this->hydrate($row);
+        }
+
+        return $trips;
+    }
+
+    /**
+     * Returns all trips for the administrator list.
+     *
+     * @return list<AdminTripListItem>
+     */
+    public function findAllForAdministration(): array
+    {
+        $statement = $this->connection->query(
+            'SELECT
+                trips.id,
+                trips.departure_datetime,
+                trips.arrival_datetime,
+                trips.total_seats,
+                trips.available_seats,
+                users.first_name AS author_first_name,
+                users.last_name AS author_last_name,
+                users.email AS author_email,
+                departure_agency.name AS departure_agency,
+                arrival_agency.name AS arrival_agency
+            FROM trips
+            INNER JOIN users
+                ON users.id = trips.author_id
+            INNER JOIN agencies AS departure_agency
+                ON departure_agency.id = trips.departure_agency_id
+            INNER JOIN agencies AS arrival_agency
+                ON arrival_agency.id = trips.arrival_agency_id
+            ORDER BY trips.departure_datetime DESC'
+        );
+
+        $trips = [];
+
+        foreach ($statement->fetchAll() as $row) {
+            $trips[] = $this->hydrateAdminListItem($row);
         }
 
         return $trips;
@@ -312,6 +351,30 @@ final class TripRepository
             authorFirstName: (string) $row['author_first_name'],
             authorLastName: (string) $row['author_last_name'],
             authorPhone: (string) $row['author_phone'],
+            authorEmail: (string) $row['author_email'],
+            departureAgency: (string) $row['departure_agency'],
+            arrivalAgency: (string) $row['arrival_agency'],
+        );
+    }
+
+    /**
+     * @param array<string, mixed> $row
+     */
+    private function hydrateAdminListItem(
+        array $row,
+    ): AdminTripListItem {
+        return new AdminTripListItem(
+            id: (int) $row['id'],
+            departureDatetime: new DateTimeImmutable(
+                (string) $row['departure_datetime']
+            ),
+            arrivalDatetime: new DateTimeImmutable(
+                (string) $row['arrival_datetime']
+            ),
+            totalSeats: (int) $row['total_seats'],
+            availableSeats: (int) $row['available_seats'],
+            authorFirstName: (string) $row['author_first_name'],
+            authorLastName: (string) $row['author_last_name'],
             authorEmail: (string) $row['author_email'],
             departureAgency: (string) $row['departure_agency'],
             arrivalAgency: (string) $row['arrival_agency'],

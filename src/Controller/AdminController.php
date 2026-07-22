@@ -215,4 +215,37 @@ final class AdminController
 
         return new RedirectResponse('/admin/agencies');
     }
+
+    public function trips(): Response
+    {
+        return new Response(
+            $this->view->render('admin/trips/index', [
+                'pageTitle' => 'Trajets',
+                'currentUser' => $this->authService->getUser(),
+                'trips' => $this->tripRepository
+                    ->findAllForAdministration(),
+            ])
+        );
+    }
+
+    public function deleteTrip(int $id): Response
+    {
+        $trip = $this->tripRepository->findById($id);
+
+        if ($trip === null) {
+            $this->flash->error(
+                'Le trajet demandé est introuvable.'
+            );
+
+            return new RedirectResponse('/admin/trips');
+        }
+
+        $this->tripRepository->delete($id);
+
+        $this->flash->success(
+            'Le trajet a été supprimé avec succès.'
+        );
+
+        return new RedirectResponse('/admin/trips');
+    }
 }

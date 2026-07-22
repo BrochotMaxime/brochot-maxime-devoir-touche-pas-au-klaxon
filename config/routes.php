@@ -261,6 +261,44 @@ $router->post(
 );
 
 $router->get(
+    '/admin/trips',
+    function () use (
+        $accessGuard,
+        $adminController,
+    ): Response {
+        $accessResponse = $accessGuard
+            ->requireAdministrator();
+
+        if ($accessResponse !== null) {
+            return $accessResponse;
+        }
+
+        return $adminController->trips();
+    },
+);
+
+$router->post(
+    '/admin/trips/:id/delete',
+    function (
+        Request $_request,
+        Response $_response,
+        string $id,
+    ) use (
+        $accessGuard,
+        $adminController,
+    ): Response {
+        $accessResponse = $accessGuard
+            ->requireAdministrator();
+
+        if ($accessResponse !== null) {
+            return $accessResponse;
+        }
+
+        return $adminController->deleteTrip((int) $id);
+    },
+);
+
+$router->get(
     '/trips/create',
     function () use (
         $accessGuard,
