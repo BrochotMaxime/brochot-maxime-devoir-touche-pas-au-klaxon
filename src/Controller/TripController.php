@@ -28,6 +28,7 @@ final class TripController
         private readonly TripRepository $tripRepository,
         private readonly TripValidator $tripValidator,
         private readonly Flash $flash,
+        private readonly ErrorController $errorController,
     ) {
     }
 
@@ -42,6 +43,166 @@ final class TripController
                 'old' => $this->getDefaultFormData(),
             ])
         );
+    }
+
+    public function edit(int $id): Response
+    {
+        $currentUser = $this->authService->getUser();
+
+        if ($currentUser === null) {
+            throw new LogicException(
+                'An authenticated user is required to edit a trip.'
+            );
+        }
+
+        $trip = $this->tripRepository->findById($id);
+
+        if ($trip === null) {
+            $this->flash->error(
+                'Le trajet demandé est introuvable.'
+            );
+
+            return new RedirectResponse('/');
+        }
+
+        if (!$trip->isOwnedBy((int) $currentUser['id'])) {
+            return $this->errorController->forbidden();
+        }
+
+        return new Response(
+            $this->view->render('trips/edit', [
+                'pageTitle' => 'Modifier un trajet',
+                'currentUser' => $currentUser,
+                'agencies' => $this->agencyRepository->findAll(),
+                'trip' => $trip,
+                'errors' => [],
+                'old' => [
+                    'departure_agency_id' =>
+                        (string) $trip->getDepartureAgencyId(),
+                    'arrival_agency_id' =>
+                        (string) $trip->getArrivalAgencyId(),
+                    'departure_datetime' =>
+                        $trip->getDepartureDatetime()->format('Y-m-d\TH:i'),
+                    'arrival_datetime' =>
+                        $trip->getArrivalDatetime()->format('Y-m-d\TH:i'),
+                    'total_seats' =>
+                        (string) $trip->getTotalSeats(),
+                    'available_seats' =>
+                        (string) $trip->getAvailableSeats(),
+                ],
+            ])
+        );
+    }
+
+    public function update(
+        Request $request,
+        int $id,
+    ): Response {
+        $currentUser = $this->authService->getUser();
+
+        if ($currentUser === null) {
+            throw new LogicException(
+                'An authenticated user is required to update a trip.'
+            );
+        }
+
+        $trip = $this->tripRepository->findById($id);
+
+        if ($trip === null) {
+            $this->flash->error(
+                'Le trajet demandé est introuvable.'
+            );
+
+            return new RedirectResponse('/');
+        }
+
+        if (!$trip->isOwnedBy((int) $currentUser['id'])) {
+            return $this->errorController->forbidden();
+        }
+
+        $data = [
+            'departure_agency_id' => trim(
+                (string) $request->request->get(
+                    'departure_agency_id',
+                    '',
+                )
+            ),
+            'arrival_agency_id' => trim(
+                (string) $request->request->get(
+                    'arrival_agency_id',
+                    '',
+                )
+            ),
+            'departure_datetime' => trim(
+                (string) $request->request->get(
+                    'departure_datetime',
+                    '',
+                )
+            ),
+            'arrival_datetime' => trim(
+                (string) $request->request->get(
+                    'arrival_datetime',
+                    '',
+                )
+            ),
+            'total_seats' => trim(
+                (string) $request->request->get(
+                    'total_seats',
+                    '',
+                )
+            ),
+            'available_seats' => trim(
+                (string) $request->request->get(
+                    'available_seats',
+                    '',
+                )
+            ),
+        ];
+
+        $errors = $this->tripValidator->validate($data);
+
+        if ($errors !== []) {
+            return new Response(
+                $this->view->render('trips/edit', [
+                    'pageTitle' => 'Modifier un trajet',
+                    'currentUser' => $currentUser,
+                    'agencies' => $this->agencyRepository->findAll(),
+                    'trip' => $trip,
+                    'errors' => $errors,
+                    'old' => $data,
+                ]),
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+            );
+        }
+
+        $departureDatetime = new DateTimeImmutable(
+            $data['departure_datetime']
+        );
+
+        $arrivalDatetime = new DateTimeImmutable(
+            $data['arrival_datetime']
+        );
+
+        $this->tripRepository->update($id, [
+            'departure_datetime' => $departureDatetime->format(
+                'Y-m-d H:i:s'
+            ),
+            'arrival_datetime' => $arrivalDatetime->format(
+                'Y-m-d H:i:s'
+            ),
+            'total_seats' => (int) $data['total_seats'],
+            'available_seats' => (int) $data['available_seats'],
+            'departure_agency_id' =>
+                (int) $data['departure_agency_id'],
+            'arrival_agency_id' =>
+                (int) $data['arrival_agency_id'],
+        ]);
+
+        $this->flash->success(
+            'Le trajet a été modifié avec succès.'
+        );
+
+        return new RedirectResponse('/');
     }
 
     public function store(Request $request): Response

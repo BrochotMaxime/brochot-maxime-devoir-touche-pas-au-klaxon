@@ -148,6 +148,18 @@ use App\Model\TripListItem;
                                     >
                                         Détails
                                     </button>
+
+                                    <?php if (
+                                        isset($currentUser['id'])
+                                        && $trip->isOwnedBy((int) $currentUser['id'])
+                                    ): ?>
+                                        <a
+                                            class="btn btn-sm btn-secondary"
+                                            href="/trips/<?= escape($trip->getId()) ?>/edit"
+                                        >
+                                            Modifier
+                                        </a>
+                                    <?php endif; ?>
                                 </td>
                             <?php endif; ?>
                         </tr>

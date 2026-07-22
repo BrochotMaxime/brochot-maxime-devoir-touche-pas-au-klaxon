@@ -201,6 +201,43 @@ final class TripRepository
     }
 
     /**
+     * Updates an existing trip.
+     *
+     * @param array{
+     *     departure_datetime: string,
+     *     arrival_datetime: string,
+     *     total_seats: int,
+     *     available_seats: int,
+     *     departure_agency_id: int,
+     *     arrival_agency_id: int
+     * } $data
+     */
+    public function update(int $id, array $data): bool
+    {
+        $statement = $this->connection->prepare(
+            'UPDATE trips
+            SET
+                departure_datetime = :departure_datetime,
+                arrival_datetime = :arrival_datetime,
+                total_seats = :total_seats,
+                available_seats = :available_seats,
+                departure_agency_id = :departure_agency_id,
+                arrival_agency_id = :arrival_agency_id
+            WHERE id = :id'
+        );
+
+        return $statement->execute([
+            'id' => $id,
+            'departure_datetime' => $data['departure_datetime'],
+            'arrival_datetime' => $data['arrival_datetime'],
+            'total_seats' => $data['total_seats'],
+            'available_seats' => $data['available_seats'],
+            'departure_agency_id' => $data['departure_agency_id'],
+            'arrival_agency_id' => $data['arrival_agency_id'],
+        ]);
+    }
+
+    /**
      * @param array<string, mixed> $row
      */
     private function hydrate(array $row): Trip
