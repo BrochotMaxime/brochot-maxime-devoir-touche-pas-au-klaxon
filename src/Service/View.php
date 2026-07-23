@@ -70,14 +70,6 @@ final class View
 
         require $templateFile;
 
-        $content = ob_get_clean();
-
-        if ($content === false) {
-            throw new RuntimeException(
-                sprintf('Unable to render template "%s".', $template)
-            );
-        }
-
-        return $content;
+        return ob_get_clean();
     }
 }

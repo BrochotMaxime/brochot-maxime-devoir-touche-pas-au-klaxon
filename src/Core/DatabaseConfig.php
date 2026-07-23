@@ -57,4 +57,9 @@ final readonly class DatabaseConfig
     {
         return $this->password;
     }
+
+    public function getDatabase(): string
+    {
+        return $this->database;
+    }
 }
