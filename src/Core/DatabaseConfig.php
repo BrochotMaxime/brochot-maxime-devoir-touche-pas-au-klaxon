@@ -25,12 +25,12 @@ final readonly class DatabaseConfig
     public static function fromEnvironment(): self
     {
         return new self(
-            host: $_ENV['DB_HOST'] ?? '127.0.0.1',
+            host: (string) ($_ENV['DB_HOST'] ?? '127.0.0.1'),
             port: (int) ($_ENV['DB_PORT'] ?? 3306),
-            database: $_ENV['DB_NAME'] ?? '',
-            username: $_ENV['DB_USER'] ?? '',
-            password: $_ENV['DB_PASSWORD'] ?? '',
-            charset: $_ENV['DB_CHARSET'] ?? 'utf8mb4',
+            database: (string) ($_ENV['DB_NAME'] ?? ''),
+            username: (string) ($_ENV['DB_USER'] ?? ''),
+            password: (string) ($_ENV['DB_PASSWORD'] ?? ''),
+            charset: (string) ($_ENV['DB_CHARSET'] ?? 'utf8mb4'),
         );
     }
 
