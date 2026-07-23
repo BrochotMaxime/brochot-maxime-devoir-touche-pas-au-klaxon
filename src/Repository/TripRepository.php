@@ -12,7 +12,7 @@ use DateTimeImmutable;
 use PDO;
 
 /**
- * Provides database access for trips.
+ * Provides trip persistence and application-specific trip queries.
  */
 final class TripRepository
 {
@@ -117,6 +117,8 @@ final class TripRepository
     }
 
     /**
+     * Returns trips created by a given user.
+     *
      * @return list<Trip>
      */
     public function findByAuthorId(int $authorId): array
@@ -240,7 +242,7 @@ final class TripRepository
     }
 
     /**
-     * Updates an existing trip.
+     * Updates the editable data of an existing trip.
      *
      * @param array{
      *     departure_datetime: string,
@@ -276,9 +278,6 @@ final class TripRepository
         ]);
     }
 
-    /**
-     * Deletes a trip by its identifier.
-     */
     public function delete(int $id): bool
     {
         $statement = $this->connection->prepare(
@@ -312,6 +311,8 @@ final class TripRepository
     }
 
     /**
+     * Hydrates a trip entity from a database row.
+     *
      * @param array{
      *     id: int|string,
      *     departure_datetime: string,
@@ -342,6 +343,8 @@ final class TripRepository
     }
 
     /**
+     * Hydrates a public trip list item from a joined database row.
+     *
      * @param array{
      *     id: int|string,
      *     departure_datetime: string,
@@ -380,6 +383,8 @@ final class TripRepository
     }
 
     /**
+     * Hydrates an administrator trip list item from a joined database row.
+     *
      * @param array{
      *     id: int|string,
      *     departure_datetime: string,

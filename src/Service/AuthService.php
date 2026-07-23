@@ -21,7 +21,9 @@ final class AuthService
     }
 
     /**
-     * Attempts to authenticate a user.
+     * Authenticates valid credentials and initializes the user session.
+     *
+     * Returns false without revealing whether the email or password was invalid.
      */
     public function attempt(string $email, string $password): bool
     {
@@ -46,6 +48,8 @@ final class AuthService
     }
 
     /**
+     * Returns the validated authenticated user data stored in the session.
+     *
      * @return array{
      *     id: int,
      *     firstName: string,
@@ -84,6 +88,7 @@ final class AuthService
 
     private function login(User $user): void
     {
+        // Prevent session fixation before storing authenticated user data.
         $this->session->regenerateId();
 
         $this->session->set(self::SESSION_KEY, [
@@ -96,6 +101,9 @@ final class AuthService
         ]);
     }
 
+    /**
+     * Clears authentication data and renews the session identifier.
+     */
     public function logout(): void
     {
         $this->session->clear();
@@ -110,6 +118,9 @@ final class AuthService
             && $user['role'] === 'ROLE_ADMIN';
     }
 
+    /**
+     * Returns the post-login destination for the authenticated user's role.
+     */
     public function getRedirectPath(): string
     {
         return $this->isAdmin()

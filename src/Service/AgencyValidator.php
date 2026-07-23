@@ -17,6 +17,10 @@ final class AgencyValidator
     }
 
     /**
+     * Validates an agency name.
+     *
+     * @param int|null $excludedId Agency identifier ignored by the uniqueness check during an update.
+     *
      * @return array{name?: string}
      */
     public function validate(

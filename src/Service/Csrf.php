@@ -17,9 +17,9 @@ final class Csrf
     }
 
     /**
-     * Returns the token associated with a form.
+     * Returns the session token associated with a form.
      *
-     * A new token is generated when none exists yet.
+     * A cryptographically secure token is generated when none exists yet.
      */
     public function getToken(string $formName): string
     {
@@ -42,7 +42,9 @@ final class Csrf
     }
 
     /**
-     * Checks whether a submitted token matches the stored form token.
+     * Validates a submitted token against the token stored for a form.
+     *
+     * Token values are compared with a timing-attack-safe function.
      */
     public function isTokenValid(
         string $formName,
@@ -75,6 +77,8 @@ final class Csrf
     }
 
     /**
+     * Returns only valid string token entries stored in the session.
+     *
      * @return array<string, string>
      */
     private function getStoredTokens(): array

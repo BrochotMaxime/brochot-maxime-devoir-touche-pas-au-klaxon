@@ -22,6 +22,8 @@ final class View
      * Renders a template inside the main layout.
      *
      * @param array<string, mixed> $data
+     *
+     * @throws RuntimeException When the template or layout file cannot be found.
      */
     public function render(
         string $template,
@@ -49,6 +51,8 @@ final class View
      * Renders a PHP template and returns its generated HTML.
      *
      * @param array<string, mixed> $data
+     * 
+     * @throws RuntimeException When the template file cannot be found.
      */
     private function renderTemplate(string $template, array $data): string
     {
@@ -64,6 +68,7 @@ final class View
             );
         }
 
+        // Prevent template data from overwriting variables already defined here.
         extract($data, EXTR_SKIP);
 
         ob_start();

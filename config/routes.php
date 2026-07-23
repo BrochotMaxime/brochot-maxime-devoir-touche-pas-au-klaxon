@@ -108,7 +108,9 @@ $tripController = new TripController(
 );
 
 /**
- * Executes an action after validating its CSRF token.
+ * Executes a state-changing action only after CSRF validation.
+ *
+ * Invalid or missing tokens are converted into the dedicated HTTP 419 response, preventing the controller action from being executed.
  *
  * @param callable(): Response $action
  */

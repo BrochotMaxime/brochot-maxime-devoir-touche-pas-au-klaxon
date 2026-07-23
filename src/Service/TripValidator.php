@@ -18,6 +18,8 @@ final class TripValidator
     }
 
     /**
+     * Validates agencies, dates and seat values submitted by a trip form.
+     *
      * @param array{
      *     departure_agency_id?: string,
      *     arrival_agency_id?: string,

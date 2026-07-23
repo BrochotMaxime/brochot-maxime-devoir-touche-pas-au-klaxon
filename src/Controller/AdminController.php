@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Handles the administrator dashboard.
+ * Handles administrator dashboard and management actions.
  */
 final class AdminController
 {
@@ -201,6 +201,9 @@ final class AdminController
         return new RedirectResponse('/admin/agencies');
     }
 
+    /**
+     * Deletes an agency only when it is not referenced by any trip.
+     */
     public function deleteAgency(int $id): Response
     {
         $agency = $this->agencyRepository->findById($id);

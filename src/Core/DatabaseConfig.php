@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Core;
 
 /**
- * Stores the database connection configuration.
+ * Stores immutable database connection settings.
  */
 final readonly class DatabaseConfig
 {
@@ -20,7 +20,7 @@ final readonly class DatabaseConfig
     }
 
     /**
-     * Creates the database configuration from environment variables.
+     * Creates the configuration from application environment variables.
      */
     public static function fromEnvironment(): self
     {

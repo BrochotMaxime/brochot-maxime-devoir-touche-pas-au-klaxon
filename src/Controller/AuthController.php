@@ -25,6 +25,9 @@ final class AuthController
     ) {
     }
 
+    /**
+     * Displays the login form or redirects an already authenticated user.
+     */
     public function showLogin(): Response
     {
         if ($this->authService->isAuthenticated()) {
@@ -44,6 +47,11 @@ final class AuthController
         );
     }
 
+    /**
+     * Validates submitted credentials and authenticates the user.
+     *
+     * Invalid form data or credentials return an HTTP 422 response without distinguishing whether the email or password was incorrect.
+     */
     public function authenticate(Request $request): Response
     {
         if ($this->authService->isAuthenticated()) {
@@ -95,6 +103,9 @@ final class AuthController
         );
     }
 
+    /**
+     * Logs out the current user and redirects to the home page.
+     */
     public function logout(): Response
     {
         $this->authService->logout();

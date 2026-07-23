@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Handles trip creation and management.
+ * Handles authenticated trip creation and owner-managed trip actions.
  */
 final class TripController
 {
@@ -50,6 +50,11 @@ final class TripController
         );
     }
 
+    /**
+     * Displays the edit form for a trip owned by the authenticated user.
+     *
+     * @throws LogicException When no authenticated user is available.
+     */
     public function edit(int $id): Response
     {
         $currentUser = $this->authService->getUser();
@@ -102,6 +107,11 @@ final class TripController
         );
     }
 
+    /**
+     * Updates a trip owned by the authenticated user.
+     *
+     * @throws LogicException When no authenticated user is available.
+     */
     public function update(
         Request $request,
         int $id,
@@ -216,6 +226,11 @@ final class TripController
         return new RedirectResponse('/');
     }
 
+    /**
+     * Deletes a trip owned by the authenticated user.
+     *
+     * @throws LogicException When no authenticated user is available.
+     */
     public function delete(int $id): Response
     {
         $currentUser = $this->authService->getUser();
@@ -249,6 +264,11 @@ final class TripController
         return new RedirectResponse('/');
     }
 
+    /**
+     * Creates a trip for the authenticated user.
+     *
+     * @throws LogicException When no authenticated user is available.
+     */
     public function store(Request $request): Response
     {
         $currentUser = $this->authService->getUser();
@@ -348,6 +368,8 @@ final class TripController
     }
 
     /**
+     * Returns initial trip form values with a departure scheduled for tomorrow.
+     *
      * @return array{
      *     departure_agency_id: string,
      *     arrival_agency_id: string,

@@ -29,6 +29,9 @@ final class Session
         unset($_SESSION[$key]);
     }
 
+    /**
+     * Regenerates the active session identifier and deletes the previous one.
+     */
     public function regenerateId(): void
     {
         if (session_status() === PHP_SESSION_ACTIVE) {
@@ -42,7 +45,7 @@ final class Session
     }
 
     /**
-     * Removes all session data and destroys the current session.
+     * Clears session data, expires the session cookie and destroys the session.
      */
     public function destroy(): void
     {
