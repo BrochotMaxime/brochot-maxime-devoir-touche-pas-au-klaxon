@@ -312,7 +312,16 @@ final class TripRepository
     }
 
     /**
-     * @param array<string, mixed> $row
+     * @param array{
+     *     id: int|string,
+     *     departure_datetime: string,
+     *     arrival_datetime: string,
+     *     total_seats: int|string,
+     *     available_seats: int|string,
+     *     author_id: int|string,
+     *     departure_agency_id: int|string,
+     *     arrival_agency_id: int|string
+     * } $row
      */
     private function hydrate(array $row): Trip
     {
@@ -333,8 +342,21 @@ final class TripRepository
     }
 
     /**
-     * @param array<string, mixed> $row
-     */
+     * @param array{
+     *     id: int|string,
+     *     departure_datetime: string,
+     *     arrival_datetime: string,
+     *     total_seats: int|string,
+     *     available_seats: int|string,
+     *     author_id: int|string,
+     *     author_first_name: string,
+     *     author_last_name: string,
+     *     author_phone: string,
+     *     author_email: string,
+     *     departure_agency: string,
+     *     arrival_agency: string
+     * } $row
+ */
     private function hydrateListItem(array $row): TripListItem
     {
         return new TripListItem(
@@ -358,7 +380,18 @@ final class TripRepository
     }
 
     /**
-     * @param array<string, mixed> $row
+     * @param array{
+     *     id: int|string,
+     *     departure_datetime: string,
+     *     arrival_datetime: string,
+     *     total_seats: int|string,
+     *     available_seats: int|string,
+     *     author_first_name: string,
+     *     author_last_name: string,
+     *     author_email: string,
+     *     departure_agency: string,
+     *     arrival_agency: string
+     * } $row
      */
     private function hydrateAdminListItem(
         array $row,
