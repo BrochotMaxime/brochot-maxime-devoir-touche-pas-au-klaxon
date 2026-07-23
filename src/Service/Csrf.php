@@ -55,7 +55,7 @@ final class Csrf
         $tokens = $this->getStoredTokens();
         $storedToken = $tokens[$formName] ?? null;
 
-        return is_string($storedToken)
+        return $storedToken !== null
             && hash_equals($storedToken, $submittedToken);
     }
 

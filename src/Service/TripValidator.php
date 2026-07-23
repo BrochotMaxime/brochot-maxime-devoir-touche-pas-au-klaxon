@@ -18,7 +18,14 @@ final class TripValidator
     }
 
     /**
-     * @param array<string, string> $data
+     * @param array{
+     *     departure_agency_id?: string,
+     *     arrival_agency_id?: string,
+     *     departure_datetime?: string,
+     *     arrival_datetime?: string,
+     *     total_seats?: string,
+     *     available_seats?: string
+     * } $data
      *
      * @return array<string, string>
      */
