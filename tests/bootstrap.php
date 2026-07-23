@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Dotenv\Dotenv;
-use RuntimeException;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 

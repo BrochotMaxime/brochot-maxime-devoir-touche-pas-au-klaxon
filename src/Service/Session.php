@@ -60,7 +60,7 @@ final class Session
                     'domain' => $cookieParameters['domain'],
                     'secure' => $cookieParameters['secure'],
                     'httponly' => $cookieParameters['httponly'],
-                    'samesite' => $cookieParameters['samesite'] ?? 'Lax',
+                    'samesite' => $cookieParameters['samesite'],
                 ],
             );
         }

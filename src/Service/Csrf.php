@@ -25,10 +25,7 @@ final class Csrf
     {
         $tokens = $this->getStoredTokens();
 
-        if (
-            isset($tokens[$formName])
-            && is_string($tokens[$formName])
-        ) {
+        if (isset($tokens[$formName])) {
             return $tokens[$formName];
         }
 
