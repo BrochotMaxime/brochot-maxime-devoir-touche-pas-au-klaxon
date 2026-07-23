@@ -1,12 +1,7 @@
 {
   "name": "brochot-maxime-devoir-touche-pas-au-klaxon",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "directories": {
-    "doc": "docs",
-    "test": "tests"
-  },
+  "description": "Intranet carpooling application for company employees",
   "scripts": {
     "sass:build": "sass resources/scss/main.scss public/assets/css/main.css --no-source-map --quiet-deps",
     "sass:watch": "sass --watch resources/scss/main.scss:public/assets/css/main.css --quiet-deps"
@@ -15,10 +10,14 @@
     "type": "git",
     "url": "git+https://github.com/BrochotMaxime/brochot-maxime-devoir-touche-pas-au-klaxon.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "php",
+    "mvc",
+    "carpooling",
+    "sass"
+  ],
+  "author": "Maxime Brochot",
   "license": "ISC",
-  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/BrochotMaxime/brochot-maxime-devoir-touche-pas-au-klaxon/issues"
   },
