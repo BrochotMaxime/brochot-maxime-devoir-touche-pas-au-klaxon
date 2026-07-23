@@ -348,7 +348,14 @@ final class TripController
     }
 
     /**
-     * @return array<string, string>
+     * @return array{
+     *     departure_agency_id: string,
+     *     arrival_agency_id: string,
+     *     departure_datetime: string,
+     *     arrival_datetime: string,
+     *     total_seats: string,
+     *     available_seats: string
+     * }
      */
     private function getDefaultFormData(): array
     {

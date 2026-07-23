@@ -46,8 +46,6 @@ final class AuthService
     }
 
     /**
-     * Returns the currently authenticated user data.
-     *
      * @return array{
      *     id: int,
      *     firstName: string,
@@ -61,7 +59,23 @@ final class AuthService
     {
         $user = $this->session->get(self::SESSION_KEY);
 
-        if (!is_array($user)) {
+        if (
+            !is_array($user)
+            || !isset(
+                $user['id'],
+                $user['firstName'],
+                $user['lastName'],
+                $user['email'],
+                $user['phone'],
+                $user['role'],
+            )
+            || !is_int($user['id'])
+            || !is_string($user['firstName'])
+            || !is_string($user['lastName'])
+            || !is_string($user['email'])
+            || !is_string($user['phone'])
+            || !is_string($user['role'])
+        ) {
             return null;
         }
 

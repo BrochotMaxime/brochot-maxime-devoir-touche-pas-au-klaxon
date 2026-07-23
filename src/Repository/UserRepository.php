@@ -110,7 +110,15 @@ final class UserRepository
     }
 
     /**
-     * @param array<string, mixed> $row
+     * @param array{
+     *     id: int|string,
+     *     last_name: string,
+     *     first_name: string,
+     *     phone: string,
+     *     email: string,
+     *     password: string,
+     *     role: string
+     * } $row
      */
     private function hydrate(array $row): User
     {

@@ -17,7 +17,7 @@ final class AgencyValidator
     }
 
     /**
-     * @return array<string, string>
+     * @return array{name?: string}
      */
     public function validate(
         string $name,

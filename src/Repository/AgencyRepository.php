@@ -175,7 +175,10 @@ final class AgencyRepository
     }
 
     /**
-     * @param array<string, mixed> $row
+     * @param array{
+     *     id: int|string,
+     *     name: string
+     * } $row
      */
     private function hydrate(array $row): Agency
     {
