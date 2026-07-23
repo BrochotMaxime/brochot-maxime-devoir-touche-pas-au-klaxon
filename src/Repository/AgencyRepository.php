@@ -63,6 +63,11 @@ final class AgencyRepository
         return $this->hydrate($row);
     }
 
+    /**
+     * Checks whether an agency name is already used.
+     *
+     * @param int|null $excludedId Agency identifier ignored during an update.
+     */
     public function existsByName(
         string $name,
         ?int $excludedId = null,
@@ -145,6 +150,9 @@ final class AgencyRepository
         ]);
     }
 
+    /**
+     * Checks whether an agency is used as a departure or arrival agency.
+     */
     public function isUsedByTrips(int $id): bool
     {
         $statement = $this->connection->prepare(
@@ -175,6 +183,8 @@ final class AgencyRepository
     }
 
     /**
+     * Hydrates an agency from a database row.
+     *
      * @param array{
      *     id: int|string,
      *     name: string

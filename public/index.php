@@ -2,6 +2,11 @@
 
 declare(strict_types=1);
 
+/**
+ * Application front controller.
+ *
+ * Loads the application bootstrap, retrieves the configured router and dispatches the current HTTP request.
+ */
 use Buki\Router\Router;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';

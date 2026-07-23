@@ -7,7 +7,7 @@ namespace App\Core;
 use PDO;
 
 /**
- * Creates and provides the application database connection.
+ * Creates and provides the application's shared PDO connection.
  */
 final class Database
 {
@@ -19,7 +19,7 @@ final class Database
     }
 
     /**
-     * Returns a shared PDO connection for the current Database instance.
+     * Returns the PDO connection, creating it on first access.
      */
     public function getConnection(): PDO
     {

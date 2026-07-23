@@ -110,6 +110,8 @@ final class UserRepository
     }
 
     /**
+     * Hydrates a user from a database row.
+     *
      * @param array{
      *     id: int|string,
      *     last_name: string,

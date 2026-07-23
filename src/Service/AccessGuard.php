@@ -21,6 +21,8 @@ final class AccessGuard
 
     /**
      * Redirects unauthenticated visitors to the login page.
+     *
+     * @return Response|null A redirect response when access is denied, or null when the user is authenticated.
      */
     public function requireAuthentication(): ?Response
     {
@@ -32,7 +34,9 @@ final class AccessGuard
     }
 
     /**
-     * Protects administrator-only pages.
+     * Restricts access to authenticated administrators.
+     *
+     * @return Response|null A redirect or forbidden response when access is denied, or null when the user is an administrator.
      */
     public function requireAdministrator(): ?Response
     {

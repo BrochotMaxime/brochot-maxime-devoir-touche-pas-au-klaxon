@@ -17,6 +17,11 @@ final class CsrfGuard
     ) {
     }
 
+    /**
+     * Validates the CSRF token submitted for a protected form.
+     *
+     * @throws InvalidCsrfTokenException When the token is missing or invalid.
+     */
     public function validate(
         Request $request,
         string $formName,

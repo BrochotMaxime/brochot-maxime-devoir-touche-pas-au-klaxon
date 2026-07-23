@@ -19,6 +19,9 @@ final class ErrorController
     ) {
     }
 
+    /**
+     * Returns the HTTP 403 forbidden response.
+     */
     public function forbidden(): Response
     {
         return new Response(
@@ -30,6 +33,11 @@ final class ErrorController
         );
     }
 
+    /**
+     * Returns the application response for an expired or invalid CSRF token.
+     *
+     * The non-standard HTTP 419 status represents an expired form session.
+     */
     public function invalidCsrfToken(): Response
     {
         return new Response(
@@ -41,6 +49,9 @@ final class ErrorController
         );
     }
 
+    /**
+     * Returns the HTTP 404 not-found response.
+     */
     public function notFound(): Response
     {
         return new Response(

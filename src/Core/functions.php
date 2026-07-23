@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 if (!function_exists('escape')) {
     /**
-     * Escapes a value before displaying it in HTML.
+     * Escapes a scalar value for safe HTML output.
      */
     function escape(string|int|float|null $value): string
     {
@@ -18,7 +18,7 @@ if (!function_exists('escape')) {
 
 if (!function_exists('csrfField')) {
     /**
-     * Generates a hidden CSRF token input.
+     * Generates an escaped hidden input containing a CSRF token.
      */
     function csrfField(string $token): string
     {

@@ -4,18 +4,18 @@
 
 Touche pas au klaxon is a PHP application built with a Model-View-Controller architecture.
 
-The project is designed to keep responsibilities separated and make the code reusable, maintainable and easy to understand.
+The project separates HTTP handling, application logic, database access and view rendering in order to keep the code reusable, maintainable and testable.
 
 All HTTP requests enter through `public/index.php`.
 
-## Main Directories
+## Project Structure
 
 ### `config/`
 
-Contains application configuration files:
+Contains application configuration files.
 
-- `bootstrap.php`
-- `routes.php`
+- `bootstrap.php` loads environment variables and initializes the session.
+- `routes.php` creates application dependencies and declares the routes.
 
 ### `database/`
 
@@ -23,7 +23,7 @@ Contains the SQL scripts used to create and populate the database.
 
 ### `public/`
 
-Contains the front controller and public assets.
+Contains the application front controller and public assets.
 
 The web server document root must point to this directory.
 
@@ -33,223 +33,237 @@ Contains source files such as Sass stylesheets.
 
 ### `src/`
 
-Contains the PHP source code and follows PSR-4 autoloading through the `App` namespace.
+Contains the PHP source code and follows PSR-4 autoloading through the
+`App` namespace.
 
-- `Controller/`: handles HTTP requests and responses
-- `Core/`: contains shared infrastructure
-- `Model/`: contains immutable domain objects representing users, agencies and trips
-- `Repository/`: contains PDO queries and converts database rows into domain models
-- `Service/`: contains reusable application logic
+- `Controller/`: handles HTTP requests and coordinates application actions
+- `Core/`: contains shared infrastructure and configuration
+- `Exception/`: contains application-specific exceptions
+- `Model/`: contains immutable domain objects and read models
+- `Repository/`: contains database queries and persistence logic
+- `Service/`: contains reusable application behaviour
 
 ### `templates/`
 
-Contains PHP views.
+Contains PHP views, layouts and reusable partials.
 
-Templates must not execute SQL queries or contain business logic.
+Templates must not execute SQL queries or contain application workflow logic.
 
 ### `tests/`
 
 Contains PHPUnit unit and integration tests.
 
+## MVC Conventions
+
+### Controllers
+
+Controllers receive HTTP input and coordinate the application workflow.
+
+They may:
+
+- call validators, services and repositories;
+- select templates;
+- create responses and redirects;
+- choose HTTP status codes;
+- add flash messages.
+
+Controllers must not contain SQL queries.
+
+### Models
+
+Models represent application data through typed immutable objects.
+
+They may expose small domain behaviours, such as checking whether a trip belongs to a given user.
+
+Models do not access the database or render templates.
+
+### Repositories
+
+Repositories contain PDO queries and database persistence logic.
+
+They:
+
+- prepare and execute SQL statements;
+- convert database rows into typed models or read models;
+- expose application-oriented query methods.
+
+Repositories do not create HTTP responses or render views.
+
+### Services
+
+Services contain reusable behaviour that does not belong directly to a controller or repository.
+
+They handle concerns such as:
+
+- authentication;
+- session access;
+- authorization;
+- CSRF protection;
+- flash messages;
+- validation;
+- view rendering.
+
+### Views
+
+Views receive prepared data from controllers and render HTML.
+
+They must:
+
+- escape dynamic values;
+- avoid SQL queries;
+- avoid persistence and application workflow logic.
+
+Reusable interface fragments are stored in `templates/partials/`, while the shared document structure is stored in `templates/layouts/base.php`.
+
 ## Request Lifecycle
 
-1. The browser sends a request.
-2. `router.php` forwards it to `public/index.php`.
+1. The browser sends an HTTP request.
+2. `router.php` forwards the request to `public/index.php`.
 3. Composer and the application bootstrap are loaded.
-4. The router matches the requested URL.
-5. A controller is executed.
-6. The controller calls services or repositories.
-7. A response, template or redirect is returned.
+4. The configured router matches the HTTP method and requested URL.
+5. Access-control and CSRF checks are executed when required.
+6. A controller coordinates services, validators and repositories.
+7. The controller returns a Symfony `Response` or `RedirectResponse`.
+8. The router sends the response to the browser.
 
 ## Routing
 
-Routes are declared in `config/routes.php`.
+Routes are declared in `config/routes.php` with Buki Router.
 
-Unknown URLs return a custom HTTP 404 response.
+Each route associates:
 
-## Environment Configuration
+- an HTTP method;
+- a URL path;
+- an anonymous route handler;
+- optional access-control and CSRF checks;
+- a controller action returning a Symfony response.
 
-Local configuration is stored in `.env`.
+GET routes display pages and forms.
 
-The file is excluded from Git.
+POST routes handle authentication and state-changing operations such as creation, update, deletion and logout.
 
-The `.env.example` file documents the required variables.
+Dynamic route parameters use the `:id` syntax. The router provides these parameters as strings, and route handlers convert database identifiers to integers before passing them to controllers.
 
-## Database Connection
+Protected routes call `AccessGuard` before executing their controller. When access is denied, the guard returns either a login redirect or an HTTP 403 response.
 
-The application uses PDO.
+State-changing routes validate their CSRF token before the controller action is executed. Invalid or missing tokens return the dedicated HTTP 419 response and prevent the operation.
 
-`App\Core\DatabaseConfig` reads the database configuration.
+Unknown URLs return the application's custom HTTP 404 response.
 
-`App\Core\Database` provides the PDO connection.
+## Dependency Injection
 
-Repositories receive this connection and do not create their own.
+The application uses explicit constructor dependency injection without a dependency injection container.
 
-## Architectural Principles
+`config/routes.php` acts as the composition root. It creates shared infrastructure, repositories, services, validators and controllers, then injects their dependencies through constructors.
 
-- one public entry point
-- separation of responsibilities
-- SQL isolated in repositories
-- thin controllers
-- simple templates
-- dependency injection
-- secure configuration
-- testable components
+Classes must not create their own database connections, repositories or shared services when those dependencies can be injected.
+
+## Environment and Database
+
+Local configuration is stored in `.env`, which is excluded from Git.
+
+The `.env.example` file documents the required environment variables.
+
+`App\Core\DatabaseConfig` reads the database configuration, while
+`App\Core\Database` creates the PDO connection.
+
+Repositories receive the shared PDO connection and do not create their own.
+
+The database schema and data rules are documented separately in `docs/database.md`.
 
 ## View Rendering
 
-The `App\Service\View` service renders PHP templates inside the shared application layout.
+`App\Service\View` renders PHP templates inside the shared application layout.
 
 Controllers provide template data and receive the generated HTML.
 
-Shared interface elements are stored in `templates/partials/`, while the main document structure is stored in `templates/layouts/base php`.
-
 Dynamic values must be escaped with the global `escape()` helper before being displayed.
 
-## Authentication
+Flash messages and the CSRF service are made available to templates through the view-rendering service.
+
+## Security
+
+### Authentication
 
 Authentication is handled by `App\Service\AuthService`.
 
-User credentials are checked against data retrieved by `UserRepository`.
+User credentials are retrieved through `UserRepository`, and submitted passwords are verified against their stored hash.
 
-Only the password hash is stored in the database. Submitted passwords are verified with PHP's password verification functions.
+After successful authentication, the session identifier is regenerated to prevent session fixation.
 
-After successful authentication, the session identifier is regenerated and the minimum required user information is stored in the session.
+Only the minimum required user information is stored in the session.
 
-Controllers retrieve the authenticated user through `AuthService` and pass it to the shared layout.
-
-## Authorization
+### Authorization
 
 Protected routes use `App\Service\AccessGuard`.
 
 Unauthenticated visitors are redirected to the login page.
 
-Authenticated standard users receive an HTTP 403 response when attempting to access administrator pages.
+Authenticated standard users receive an HTTP 403 response when attempting to access administrator routes.
 
-Authorization is checked server-side for every protected route. Hiding a link or button in a template is not considered sufficient protection.
+Authorization is always checked server-side. Hiding a link or button in a template is not considered sufficient protection.
 
-Logout is handled through a POST request and destroys both server-side session data and the session cookie.
+Logout is handled through a POST request and clears the authenticated session.
 
-## Flash Messages
-
-Temporary feedback messages are handled by `App\Service\Flash`.
-
-Messages are stored in the PHP session, survive one redirect and are removed after their first display.
-
-The shared layout renders flash messages through `templates/partials/flash.php`.
-
-Supported message types are:
-
-- success
-- danger
-- warning
-- info
-
-Write operations will follow the Post/Redirect/Get pattern and add a success or error message before redirecting to the corresponding list page.
-
-## Styling
-
-The interface uses Bootstrap and Sass.
-
-Bootstrap variables are overridden before importing the framework so that the supplied graphic palette is applied to standard components.
-
-Sass source files are stored in `resources/scss/`.
-
-Compiled CSS is generated in `public/assets/css/main.css`.
-
-Available commands:
-
-- `npm run sass:build`
-- `npm run sass:watch`
-
-## Read Models
-
-List pages may use dedicated read models when their data differs from the main domain model.
-
-`TripListItem` represents the joined trip and agency information required by the public home page.
-
-The corresponding SQL query remains inside `TripRepository`.
-
-## Authenticated Trip Details
-
-The public trip query also retrieves the author and total seat information required by authenticated users.
-
-Private trip details are rendered only when a user is authenticated. They must not be included in the visitor HTML output.
-
-A shared Bootstrap modal is populated from button data attributes by `public/assets/js/trip-details-modal.js`.
-
-Dynamic values are inserted with `textContent` to avoid interpreting database content as HTML.
-
-## Trip Validation
-
-Trip creation and update rules are handled by `App\Service\TripValidator`.
-
-The validator checks agencies, date consistency and seat values before a repository write operation is attempted.
-
-The trip author is always retrieved from the authenticated session and is never accepted from submitted form data.
-
-After successful creation, the application follows the Post/Redirect/Get pattern and displays a flash message on the trip list.
-
-## Trip Ownership
-
-Trip edit and delete operations verify ownership on the server before any action is performed.
-
-Edit and delete controls are displayed only for owned trips, but interface visibility is not considered an authorization mechanism.
-
-Creation and editing share the same form partial and validation service.
-
-Deletion uses a POST request and requires explicit user confirmation before the form is submitted.
-
-## Administrator Dashboard
-
-The administrator dashboard is handled by `AdminController`.
-
-It displays summary counts retrieved through the user, agency and trip repositories.
-
-Access to `/admin` is protected by the administrator guard.
-
-The dashboard provides navigation to the user, agency and trip administration sections.
-
-## User Administration
-
-The administrator user page displays employees retrieved through `UserRepository`.
-
-User data is read-only because employees are supplied by the company human resources system.
-
-Password hashes are never rendered in templates.
-
-Access to `/admin/users` is restricted to authenticated administrators.
-
-## Agency Administration
-
-Agency administration is restricted to authenticated administrators.
-
-Agency creation and editing share a reusable form partial and `AgencyValidator`.
-
-Agency names are required, limited to 100 characters and unique.
-
-Before deletion, the repository verifies whether an agency is referenced by a trip. Database foreign keys remain the final referential integrity protection.
-
-Successful write operations follow the Post/Redirect/Get pattern and display a flash message on the agency list.
-
-## Trip Administration
-
-The administrator trip page displays every trip, including past and full trips.
-
-The list uses `AdminTripListItem`, a read model dedicated to administration.
-
-Administrators can delete any trip through a protected POST route.
-
-Employee ownership rules do not apply to administrator deletion, but administrator authorization is always checked server-side.
-
-## CSRF Protection
+### CSRF Protection
 
 All state-changing forms include a CSRF token generated by `App\Service\Csrf`.
 
 Tokens are stored in the PHP session and submitted through the hidden `_csrf_token` form field.
 
-Protected POST routes validate the submitted token through `CsrfGuard` before executing controller actions.
+Protected POST routes validate tokens through `CsrfGuard` before executing controller actions.
 
-Invalid or missing tokens return a dedicated session-expired response and prevent the write operation.
+Resource-specific tokens include the target identifier in their form name, preventing a token generated for one record from being reused for another.
 
-Resource deletion tokens include the target identifier in their form name, preventing a token generated for one record from being reused for another.
+### Output Escaping
+
+Dynamic values rendered in templates must be escaped with `escape()`.
+
+JavaScript inserts dynamic text with `textContent` when database values must be displayed without being interpreted as HTML.
+
+## Application Conventions
+
+### Validation
+
+Form rules are handled by dedicated validator services before repository write operations are attempted.
+
+The database remains responsible for final integrity constraints such as unique values and foreign-key relationships.
+
+Validation depending on the current user or current date is handled by the PHP application.
+
+### Post/Redirect/Get
+
+Successful write operations follow the Post/Redirect/Get pattern.
+
+Controllers add a flash message and redirect to the corresponding list page after creation, update or deletion.
+
+Flash messages survive one redirect and are removed after their first display.
+
+### Read Models
+
+List pages may use dedicated immutable read models when their required data differs from the main domain model.
+
+Database joins remain inside repositories, which return typed objects to controllers.
+
+### Ownership
+
+The authenticated user is used as the author of a newly created trip and is never accepted from submitted form data.
+
+Trip edit and delete operations verify ownership server-side before performing any action.
+
+Administrators may perform administration-specific actions only after their role has been verified.
+
+## Architectural Principles
+
+The project follows these principles:
+
+- one public entry point;
+- separation of responsibilities;
+- SQL isolated in repositories;
+- thin controllers;
+- immutable typed models;
+- simple templates;
+- explicit dependency injection;
+- server-side authorization;
+- reusable security services;
+- testable components.
