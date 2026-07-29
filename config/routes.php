@@ -9,6 +9,7 @@ use App\Controller\TripController;
 use App\Controller\AdminController;
 use App\Core\Database;
 use App\Core\DatabaseConfig;
+use App\Core\Application;
 use App\Exception\InvalidCsrfTokenException;
 use App\Repository\UserRepository;
 use App\Repository\TripRepository;
@@ -22,6 +23,7 @@ use App\Service\TripValidator;
 use App\Service\AgencyValidator;
 use App\Service\Csrf;
 use App\Service\CsrfGuard;
+use App\Service\DemoGuard;
 use Buki\Router\Router;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,10 +37,18 @@ $flash = new Flash($session);
 $csrf = new Csrf($session);
 $csrfGuard = new CsrfGuard($csrf);
 
+$application = new Application();
+
 $view = new View(
     dirname(__DIR__) . '/templates',
     $flash,
     $csrf,
+    $application,
+);
+
+$demoGuard = new DemoGuard(
+    $application,
+    $flash,
 );
 
 $databaseConfig = DatabaseConfig::fromEnvironment();
@@ -301,12 +311,22 @@ $router->post(
         $accessGuard,
         $adminController,
         $executeWithCsrf,
+        $demoGuard,
     ): Response {
         $accessResponse = $accessGuard
             ->requireAdministrator();
 
         if ($accessResponse !== null) {
             return $accessResponse;
+        }
+
+        $demoResponse = $demoGuard
+            ->requireDestructiveActionAllowed(
+                redirectTo:'/admin/agencies'
+            );
+
+        if ($demoResponse !== null) {
+            return $demoResponse;
         }
 
         return $executeWithCsrf(
@@ -345,12 +365,22 @@ $router->post(
         $accessGuard,
         $adminController,
         $executeWithCsrf,
+        $demoGuard,
     ): Response {
         $accessResponse = $accessGuard
             ->requireAdministrator();
 
         if ($accessResponse !== null) {
             return $accessResponse;
+        }
+
+        $demoResponse = $demoGuard
+            ->requireDestructiveActionAllowed(
+                redirectTo: '/admin/trips'
+            );
+
+        if ($demoResponse !== null) {
+            return $demoResponse;
         }
 
         return $executeWithCsrf(
@@ -467,12 +497,22 @@ $router->post(
         $accessGuard,
         $tripController,
         $executeWithCsrf,
+        $demoGuard,
     ): Response {
         $accessResponse = $accessGuard
             ->requireAuthentication();
 
         if ($accessResponse !== null) {
             return $accessResponse;
+        }
+
+        $demoResponse = $demoGuard
+            ->requireDestructiveActionAllowed(
+                redirectTo: '/admin/trips'
+            );
+
+        if ($demoResponse !== null) {
+            return $demoResponse;
         }
 
         return $executeWithCsrf(
