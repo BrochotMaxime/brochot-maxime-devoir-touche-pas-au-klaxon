@@ -131,6 +131,10 @@ use App\Service\Csrf;
                                             type="button"
                                             data-bs-toggle="modal"
                                             data-bs-target="#trip-details-modal"
+                                            data-trip-author="<?= escape($trip->getAuthorFullName()) ?>"
+                                            data-trip-phone="<?= escape($trip->getAuthorPhone()) ?>"
+                                            data-trip-email="<?= escape($trip->getAuthorEmail()) ?>"
+                                            data-trip-total-seats="<?= escape($trip->getTotalSeats()) ?>"
                                         >
                                             Détails
                                         </button>

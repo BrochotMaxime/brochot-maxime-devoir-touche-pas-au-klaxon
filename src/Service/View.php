@@ -6,6 +6,8 @@ namespace App\Service;
 
 use RuntimeException;
 
+use App\Core\Application;
+
 /**
  * Renders PHP templates inside the shared application layout.
  */
@@ -15,6 +17,7 @@ final class View
         private readonly string $templatePath,
         private readonly Flash $flash,
         private readonly Csrf $csrf,
+        private readonly Application $application,
     ) {
     }
 
@@ -33,6 +36,7 @@ final class View
         $templateData = [
             ...$data,
             'csrf' => $this->csrf,
+            'application' => $this->application,
         ];
 
         $content = $this->renderTemplate(

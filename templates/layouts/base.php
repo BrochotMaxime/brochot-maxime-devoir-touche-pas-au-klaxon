@@ -2,13 +2,16 @@
 
 declare(strict_types=1);
 
+use App\Core\Application;
+
 /**
+ * @var Application $application
  * @var string $content
  * @var string|null $pageTitle
- * @var array<string, mixed>|null $currentUser
  */
 
-$applicationName = 'Touche pas au klaxon';
+$applicationName = $application->getName();
+
 $documentTitle = isset($pageTitle)
     ? sprintf('%s | %s', $pageTitle, $applicationName)
     : $applicationName;
@@ -34,6 +37,8 @@ $documentTitle = isset($pageTitle)
 
     <body>
         <?php require dirname(__DIR__) . '/partials/header.php'; ?>
+
+        <?php require dirname(__DIR__) . '/partials/demo-banner.php'; ?>
 
         <?php require dirname(__DIR__) . '/partials/flash.php'; ?>
 
