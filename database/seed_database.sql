@@ -2,8 +2,6 @@
 
 SET NAMES utf8mb4;
 
-USE touche_pas_au_klaxon;
-
 START TRANSACTION;
 
 
